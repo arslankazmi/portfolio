@@ -22,13 +22,22 @@
     <span class="orb orb-c"></span>
   </div>
 
+  <!-- Easter egg: only visible in 90s mode (html[data-era="90s"]) -->
+  <div id="retro-top" class="retro-only" aria-hidden="true">
+    <marquee behavior="alternate" scrollamount="6">★ Welcome to Arslan Kazmi's Home Page ★ Best viewed in Netscape Navigator 4.0 at 800×600 ★ Thanks for visiting! ★</marquee>
+    <p class="retro-construction"><span class="blink">🚧</span> This site is under construction <span class="blink">🚧</span></p>
+  </div>
+
   <header class="hero">
     <div class="hero-inner">
       <div class="hero-top">
         <span class="kicker">Project Directory</span>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light / dark theme">
-          <span class="theme-icon" aria-hidden="true">☾</span>
-        </button>
+        <div class="toggles">
+          <button id="era-toggle" class="era-toggle" type="button" aria-pressed="false" title="Time-travel to 1996">💾 90s</button>
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light / dark theme">
+            <span class="theme-icon" aria-hidden="true">☾</span>
+          </button>
+        </div>
       </div>
       <h1 id="profile-name">Arslan Kazmi</h1>
       <p id="profile-tagline" class="tagline"></p>
@@ -53,6 +62,26 @@
   </div>
 
   <main class="main">
+    <noscript>
+      <!-- Static fallback for when JavaScript is unavailable. Manual mirror of
+           data/projects.json — keep the list below in sync when projects change. -->
+      <section class="noscript-fallback">
+        <h2>Projects</h2>
+        <p>JavaScript is off — here's the plain list. Everything links straight to GitHub.</p>
+        <ul>
+          <li><a href="https://github.com/arslankazmi/receipt-ocr">Receipt OCR</a> — VLM receipt OCR: multi-model eval (Donut/Qwen2-VL/TrOCR/Claude), Donut finetune, FastAPI.</li>
+          <li><a href="https://github.com/arslankazmi/doc-ai-pipeline">Document AI Pipeline</a> — handwritten-form extraction with a human-in-the-loop feedback loop.</li>
+          <li><a href="https://github.com/arslankazmi/langgraph-research-agent">LangGraph Research Agent</a> — multi-agent equity research, LangGraph + Postgres + LangSmith.</li>
+          <li><a href="https://github.com/arslankazmi/StarCraft-II-Player-Skill-Classification">StarCraft II Player Skill Classification</a> — skill-tier classification from gameplay telemetry.</li>
+          <li><a href="https://github.com/arslankazmi/fastapi-ml-template">FastAPI ML Template</a> — versioned routers, per-version Swagger, uv, Docker.</li>
+          <li><a href="https://github.com/arslankazmi/ai-coded-git-scrub">Git Scrub — Visual History Explorer</a> — interactive git-history explorer with sliders.</li>
+          <li><a href="https://github.com/arslankazmi/ak-ai">ak-ai — Claude Code Skills &amp; Tools</a> — open-source Claude Code skills and AI tooling.</li>
+          <li><a href="https://github.com/arslankazmi/ai-poetry">AI Poetry</a> — poems written by AI models in their namesake forms.</li>
+        </ul>
+        <p><a href="https://github.com/arslankazmi">All repositories on GitHub →</a></p>
+      </section>
+    </noscript>
+
     <section id="featured-section" class="featured-section" hidden>
       <div class="section-head">
         <h2>★ Featured</h2>
@@ -66,8 +95,13 @@
   </main>
 
   <footer class="footer">
-    <p>Built as a static site · data in <code>data/projects.json</code> · refresh with <code>node scripts/refresh.mjs</code></p>
+    <p>Built as a static site · data in <code>data/projects.json</code></p>
     <p id="footer-links" class="footer-links"></p>
+    <div id="retro-foot" class="retro-only" aria-hidden="true">
+      <hr />
+      <p>You are visitor number <span id="hit-counter" class="counter">000001</span></p>
+      <p>© 1996 · Handcrafted in Notepad · <a href="#top">[ Back to top ]</a></p>
+    </div>
   </footer>
 
   <script src="./app.js" defer></script>

@@ -354,3 +354,153 @@ html[data-theme="light"] .segmented button[aria-selected="true"] { color: #fff; 
   .controls-inner { gap: 0.9rem; }
   .card-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------- toggles ---------- */
+.toggles { display: flex; align-items: center; gap: 0.5rem; }
+.era-toggle {
+  font-family: var(--font-body);
+  font-size: 0.82rem; font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.era-toggle:hover { border-color: var(--accent-2); background: var(--surface-2); transform: translateY(-1px); }
+
+/* ---------- no-JS fallback (works in any era) ---------- */
+.noscript-fallback {
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+}
+.noscript-fallback h2 { font-family: var(--font-head); margin-top: 0; }
+.noscript-fallback ul { line-height: 1.9; padding-left: 1.2rem; }
+.noscript-fallback a { color: var(--accent); text-decoration: underline; }
+
+/* ============================================================
+   EASTER EGG — 90s mode.  html[data-era="90s"]
+   Pure-HTML aesthetic: tiled background, Times New Roman, beveled
+   borders, blue underlined links, marquee, hit counter. No fancy
+   CSS, no gradients, no web fonts — like it's 1996.
+   ============================================================ */
+.retro-only { display: none; }
+
+html[data-era="90s"] { scroll-behavior: auto; }
+
+html[data-era="90s"] body {
+  /* classic light tiled background, rendered purely in CSS */
+  background-color: #c0c0c0;
+  background-image:
+    repeating-conic-gradient(#ffffff 0% 25%, #eaeaea 0% 50%);
+  background-size: 22px 22px;
+  color: #000080;
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+html[data-era="90s"] .bg-orbs { display: none !important; }
+html[data-era="90s"] .retro-only { display: block; text-align: center; }
+
+/* kill all the modern flourishes */
+html[data-era="90s"] .card,
+html[data-era="90s"] .controls,
+html[data-era="90s"] .kicker,
+html[data-era="90s"] .lang-pill,
+html[data-era="90s"] .tag,
+html[data-era="90s"] .search,
+html[data-era="90s"] .segmented,
+html[data-era="90s"] .era-toggle,
+html[data-era="90s"] .theme-toggle,
+html[data-era="90s"] .hero-links a,
+html[data-era="90s"] .filter-pill {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  background-image: none !important;
+}
+
+html[data-era="90s"] .hero, html[data-era="90s"] .main, html[data-era="90s"] .footer { max-width: 760px; }
+
+html[data-era="90s"] .hero h1 {
+  -webkit-text-fill-color: initial;
+  background: none;
+  color: #000080;
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+  text-shadow: 2px 2px #c0c0c0;
+}
+html[data-era="90s"] .tagline,
+html[data-era="90s"] .blurb { text-align: center; color: #000080; font-family: inherit; }
+html[data-era="90s"] .hero-top { justify-content: center; }
+html[data-era="90s"] .kicker { color: #800080; background: none; border: none; }
+
+/* links: blue, underlined, visited purple — the 90s holy trinity */
+html[data-era="90s"] a { color: #0000ee; text-decoration: underline; }
+html[data-era="90s"] a:visited { color: #551a8b; }
+html[data-era="90s"] .repo-link, html[data-era="90s"] .footer-links a { color: #0000ee; }
+
+/* beveled "Windows 95" controls */
+html[data-era="90s"] .era-toggle,
+html[data-era="90s"] .theme-toggle,
+html[data-era="90s"] .segmented button,
+html[data-era="90s"] .hero-links a {
+  background: #c0c0c0 !important;
+  color: #000 !important;
+  border: 2px outset #ffffff !important;
+  font-family: "Times New Roman", Times, serif;
+  padding: 2px 10px;
+}
+html[data-era="90s"] .segmented { background: transparent; border: none; padding: 0; gap: 6px; }
+html[data-era="90s"] .segmented button[aria-selected="true"] { border-style: inset !important; font-weight: bold; }
+html[data-era="90s"] .search { border: 2px inset #808080 !important; background: #fff !important; color: #000 !important; font-family: inherit; }
+html[data-era="90s"] .controls { position: static; background: transparent; border: none; }
+html[data-era="90s"] .control-label { color: #800080; }
+
+/* cards become bordered table-like boxes */
+html[data-era="90s"] .card-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+html[data-era="90s"] .card {
+  background: #ffffff !important;
+  border: 2px ridge #808080 !important;
+  color: #000 !important;
+  padding: 10px 12px;
+}
+html[data-era="90s"] .card::before { display: none; }
+html[data-era="90s"] .card h3, html[data-era="90s"] .card h3 a { color: #0000ee; font-family: "Times New Roman", Times, serif; }
+html[data-era="90s"] .card-desc { color: #000; }
+html[data-era="90s"] .lang-pill { background: #ffffcc !important; border: 1px solid #808080 !important; color: #000 !important; }
+html[data-era="90s"] .lang-dot { display: none; }
+html[data-era="90s"] .tag { background: #ffffe0 !important; border: 1px solid #999 !important; color: #000 !important; }
+html[data-era="90s"] .tag.kw { color: #0000ee !important; }
+html[data-era="90s"] .tag.kw.active { background: #000080 !important; color: #fff !important; }
+html[data-era="90s"] .section-head h2 { font-family: "Times New Roman", Times, serif; color: #800000; }
+html[data-era="90s"] .group-bar { display: none; }
+html[data-era="90s"] .section-count { background: #c0c0c0; border: 1px outset #fff; color: #000; }
+html[data-era="90s"] .group { border-top: 2px groove #808080; padding-top: 10px; }
+
+/* retro chrome */
+html[data-era="90s"] #retro-top marquee {
+  display: block; background: #000080; color: #ffff00;
+  font-weight: bold; padding: 4px; border: 2px ridge #808080;
+}
+html[data-era="90s"] .retro-construction { color: #ff0000; font-weight: bold; }
+html[data-era="90s"] .counter {
+  font-family: "Courier New", monospace; background: #000; color: #00ff00;
+  padding: 1px 6px; border: 1px solid #00ff00; letter-spacing: 2px;
+}
+html[data-era="90s"] .footer { border-top: 2px groove #808080; color: #000080; }
+html[data-era="90s"] .stats dd { color: #800000; font-family: "Times New Roman", Times, serif; }
+html[data-era="90s"] .stats dt { color: #000080; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-era="90s"] .blink { animation: blink 1s step-start infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+}
+
+@media (max-width: 600px) {
+  html[data-era="90s"] .card-grid { grid-template-columns: 1fr; }
+}

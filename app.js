@@ -107,6 +107,33 @@ function wireControls() {
     $("#theme-toggle .theme-icon").textContent = next === "light" ? "☀" : "☾";
     try { localStorage.setItem("ak-theme", next); } catch (_) {}
   });
+
+  const eraBtn = $("#era-toggle");
+  if (eraBtn) eraBtn.addEventListener("click", () =>
+    setEra(document.documentElement.getAttribute("data-era") === "90s" ? "" : "90s"));
+}
+
+/* ---------------- easter egg: 90s mode ---------------- */
+function setEra(era) {
+  const root = document.documentElement;
+  if (era === "90s") root.setAttribute("data-era", "90s");
+  else root.removeAttribute("data-era");
+  const btn = $("#era-toggle");
+  if (btn) {
+    btn.setAttribute("aria-pressed", String(era === "90s"));
+    btn.textContent = era === "90s" ? "🖥️ back to now" : "💾 90s";
+  }
+  try { localStorage.setItem("ak-era", era); } catch (_) {}
+}
+
+function bumpHitCounter() {
+  const el = $("#hit-counter");
+  if (!el) return;
+  let n = 0;
+  try { n = parseInt(localStorage.getItem("ak-hits") || "0", 10) || 0; } catch (_) {}
+  n += 1;
+  try { localStorage.setItem("ak-hits", String(n)); } catch (_) {}
+  el.textContent = String(13370 + n).padStart(6, "0"); // a respectable 90s visitor count
 }
 
 /* ---------------- filtering ---------------- */
@@ -266,13 +293,12 @@ function esc(s) {
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-/* restore theme before paint already handled by default dark; sync icon + stored pref */
-(function restoreTheme() {
+/* restore stored prefs before paint (no flash of the wrong theme/era) */
+(function restorePrefs() {
   try {
-    const saved = localStorage.getItem("ak-theme");
-    if (saved) {
-      document.documentElement.setAttribute("data-theme", saved);
-    }
+    const t = localStorage.getItem("ak-theme");
+    if (t) document.documentElement.setAttribute("data-theme", t);
+    if (localStorage.getItem("ak-era") === "90s") document.documentElement.setAttribute("data-era", "90s");
   } catch (_) {}
 })();
 
@@ -280,5 +306,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const cur = document.documentElement.getAttribute("data-theme");
   const icon = $("#theme-toggle .theme-icon");
   if (icon) icon.textContent = cur === "light" ? "☀" : "☾";
+
+  const eraBtn = $("#era-toggle");
+  if (eraBtn && document.documentElement.getAttribute("data-era") === "90s") {
+    eraBtn.setAttribute("aria-pressed", "true");
+    eraBtn.textContent = "🖥️ back to now";
+  }
+  bumpHitCounter();
   init();
 });
