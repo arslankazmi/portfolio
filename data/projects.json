@@ -57,18 +57,6 @@
       "updated": "2026-05-15"
     },
     {
-      "slug": "git-reaper",
-      "name": "Git Reaper",
-      "repo": "https://github.com/arslankazmi/git-reaper",
-      "description": "An LLM-powered GitHub repository assistant — ask questions about a repo and get grounded, context-aware answers.",
-      "category": "AI Agents & LLMs",
-      "language": "Python",
-      "libraries": ["LLM", "Python"],
-      "keywords": ["LLM", "GitHub automation", "developer tools", "code assistant", "AI agent", "RAG"],
-      "featured": true,
-      "updated": "2024-12-18"
-    },
-    {
       "slug": "starcraft-ii-skill-classification",
       "name": "StarCraft II Player Skill Classification",
       "repo": "https://github.com/arslankazmi/StarCraft-II-Player-Skill-Classification",
