@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arslan Kazmi — AI / ML Engineer · Project Directory</title>
+  <meta name="description" content="Project portfolio of Arslan Kazmi, MSc — AI/ML engineer. VLM evaluation, finetuning, document AI, LLM agents, and MLOps." />
+  <meta name="color-scheme" content="dark light" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Arslan Kazmi — AI / ML Engineer" />
+  <meta property="og:description" content="A directory of AI, ML and data-science projects — evaluation, finetuning, document AI, and LLM agents." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+  </div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-top">
+        <span class="kicker">Project Directory</span>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light / dark theme">
+          <span class="theme-icon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+      <h1 id="profile-name">Arslan Kazmi</h1>
+      <p id="profile-tagline" class="tagline"></p>
+      <p id="profile-blurb" class="blurb"></p>
+      <nav id="profile-links" class="hero-links" aria-label="Profile links"></nav>
+      <dl class="stats" id="stats" aria-label="Summary"></dl>
+    </div>
+  </header>
+
+  <div class="controls" role="region" aria-label="Filters and grouping">
+    <div class="controls-inner">
+      <div class="control-block">
+        <span class="control-label">Group by</span>
+        <div id="groupby" class="segmented" role="tablist" aria-label="Group projects by"></div>
+      </div>
+      <div class="control-block grow">
+        <label class="control-label" for="search">Search</label>
+        <input id="search" class="search" type="search" placeholder="Search projects, keywords, libraries…" autocomplete="off" />
+      </div>
+    </div>
+    <div id="active-filters" class="active-filters" aria-live="polite"></div>
+  </div>
+
+  <main class="main">
+    <section id="featured-section" class="featured-section" hidden>
+      <div class="section-head">
+        <h2>★ Featured</h2>
+        <p class="section-sub">Flagship AI / ML work</p>
+      </div>
+      <div id="featured" class="card-grid"></div>
+    </section>
+
+    <div id="groups" class="groups"></div>
+    <p id="empty" class="empty" hidden>No projects match your filters.</p>
+  </main>
+
+  <footer class="footer">
+    <p>Built as a static site · data in <code>data/projects.json</code> · refresh with <code>node scripts/refresh.mjs</code></p>
+    <p id="footer-links" class="footer-links"></p>
+  </footer>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

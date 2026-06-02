@@ -1,0 +1,193 @@
+{
+  "profile": {
+    "name": "Arslan Kazmi, MSc",
+    "tagline": "AI / ML Engineer — eval frameworks, finetuning & document AI",
+    "blurb": "Exploring data one model at a time. MSc Computer Science + AI, University of Guelph · Vector Institute Scholar. I build evaluation pipelines, finetune vision & language models, and ship them behind clean APIs.",
+    "github": "https://github.com/arslankazmi",
+    "email": "akazmi.public@gmail.com",
+    "links": [
+      { "label": "LinkedIn", "url": "" }
+    ]
+  },
+  "groupings": ["category", "library", "keyword", "language"],
+  "defaultGrouping": "category",
+  "categoryOrder": [
+    "AI Agents & LLMs",
+    "Computer Vision / Document AI",
+    "ML & Modeling",
+    "MLOps & Templates",
+    "Developer Tools",
+    "Creative AI",
+    "Writing & Notes"
+  ],
+  "projects": [
+    {
+      "slug": "receipt-ocr",
+      "name": "Receipt OCR",
+      "repo": "https://github.com/arslankazmi/receipt-ocr",
+      "description": "VLM receipt OCR with a multi-model evaluation harness (Donut, Qwen2-VL, TrOCR, Claude), a Donut finetune, and a FastAPI service. WebDataset sharding scales it from 200 images to 550 GB.",
+      "category": "Computer Vision / Document AI",
+      "language": "Python",
+      "libraries": ["Donut", "Qwen2-VL", "TrOCR", "Claude", "FastAPI", "PyTorch", "WebDataset"],
+      "keywords": ["VLM", "OCR", "document AI", "model evaluation", "fine-tuning", "FastAPI", "computer vision"],
+      "featured": true,
+      "updated": "2026-05-19"
+    },
+    {
+      "slug": "doc-ai-pipeline",
+      "name": "Document AI Pipeline",
+      "repo": "https://github.com/arslankazmi/doc-ai-pipeline",
+      "description": "End-to-end Document AI pipeline for handwritten form extraction, with a human-in-the-loop feedback loop that turns corrections into better models.",
+      "category": "Computer Vision / Document AI",
+      "language": "Python",
+      "libraries": ["Transformers", "FastAPI", "OpenCV"],
+      "keywords": ["document AI", "handwriting recognition", "OCR", "human-in-the-loop", "data extraction", "ML pipeline"],
+      "featured": true,
+      "updated": "2026-05-19"
+    },
+    {
+      "slug": "langgraph-research-agent",
+      "name": "LangGraph Research Agent",
+      "repo": "https://github.com/arslankazmi/langgraph-research-agent",
+      "description": "Multi-agent equity-research system with verification gates and citation tracking, built on LangGraph + Postgres + LangSmith and served via FastAPI.",
+      "category": "AI Agents & LLMs",
+      "language": "Python",
+      "libraries": ["LangGraph", "LangSmith", "FastAPI", "PostgreSQL"],
+      "keywords": ["LLM agents", "multi-agent", "RAG", "citation tracking", "financial services", "research automation"],
+      "featured": true,
+      "updated": "2026-05-15"
+    },
+    {
+      "slug": "git-reaper",
+      "name": "Git Reaper",
+      "repo": "https://github.com/arslankazmi/git-reaper",
+      "description": "An LLM-powered GitHub repository assistant — ask questions about a repo and get grounded, context-aware answers.",
+      "category": "AI Agents & LLMs",
+      "language": "Python",
+      "libraries": ["LLM", "Python"],
+      "keywords": ["LLM", "GitHub automation", "developer tools", "code assistant", "AI agent", "RAG"],
+      "featured": true,
+      "updated": "2024-12-18"
+    },
+    {
+      "slug": "starcraft-ii-skill-classification",
+      "name": "StarCraft II Player Skill Classification",
+      "repo": "https://github.com/arslankazmi/StarCraft-II-Player-Skill-Classification",
+      "description": "Classifies StarCraft II players by skill tier from gameplay telemetry — feature engineering and supervised modelling on behavioural data.",
+      "category": "ML & Modeling",
+      "language": "Python",
+      "libraries": ["scikit-learn", "pandas", "NumPy"],
+      "keywords": ["classification", "machine learning", "data science", "feature engineering", "esports analytics"],
+      "featured": false,
+      "updated": "2023-08-08"
+    },
+    {
+      "slug": "keras-models",
+      "name": "Keras Models",
+      "repo": "https://github.com/arslankazmi/keras-models",
+      "description": "A collection of deep-learning models implemented in Keras — reference architectures and training experiments.",
+      "category": "ML & Modeling",
+      "language": "Python",
+      "libraries": ["Keras", "TensorFlow"],
+      "keywords": ["deep learning", "neural networks", "Keras", "model training", "computer vision"],
+      "featured": false,
+      "updated": "2018-12-20"
+    },
+    {
+      "slug": "uog-masters-thesis",
+      "name": "MSc Thesis — University of Guelph",
+      "repo": "https://github.com/arslankazmi/uog-masters-thesis-arslan-kazmi",
+      "description": "Master's thesis research (Computer Science + AI, University of Guelph) — write-up, experiments, and supporting code.",
+      "category": "ML & Modeling",
+      "language": null,
+      "libraries": [],
+      "keywords": ["research", "machine learning", "academic", "deep learning"],
+      "featured": false,
+      "updated": "2023-10-25"
+    },
+    {
+      "slug": "fastapi-ml-template",
+      "name": "FastAPI ML Template",
+      "repo": "https://github.com/arslankazmi/fastapi-ml-template",
+      "description": "Production-ready FastAPI + ML template: versioned routers, per-version Swagger docs, uv dependency management, and Docker out of the box.",
+      "category": "MLOps & Templates",
+      "language": "Python",
+      "libraries": ["FastAPI", "Docker", "uv"],
+      "keywords": ["MLOps", "FastAPI", "model serving", "Docker", "API", "ML deployment", "template"],
+      "featured": true,
+      "updated": "2026-05-15"
+    },
+    {
+      "slug": "ml-repo-template",
+      "name": "ML Repo Template",
+      "repo": "https://github.com/arslankazmi/ml-repo-template",
+      "description": "A template ML repository showing a clean branch strategy for both R&D and productization workflows.",
+      "category": "MLOps & Templates",
+      "language": null,
+      "libraries": [],
+      "keywords": ["MLOps", "project structure", "R&D", "productization", "best practices", "template"],
+      "featured": false,
+      "updated": "2024-07-30"
+    },
+    {
+      "slug": "cml-example-base",
+      "name": "CML Example Base",
+      "repo": "https://github.com/arslankazmi/cml-example-base",
+      "description": "A worked example of Continuous Machine Learning (CML) — model training driven from CI with automated reporting.",
+      "category": "MLOps & Templates",
+      "language": null,
+      "libraries": ["CML", "GitHub Actions"],
+      "keywords": ["MLOps", "CI/CD", "continuous machine learning", "automation"],
+      "featured": false,
+      "updated": "2022-12-27"
+    },
+    {
+      "slug": "ai-coded-git-scrub",
+      "name": "Git Scrub — Visual History Explorer",
+      "repo": "https://github.com/arslankazmi/ai-coded-git-scrub",
+      "description": "An interactive visual git-history explorer with sliders to scrub through commits — built entirely with Claude Code.",
+      "category": "Developer Tools",
+      "language": "JavaScript",
+      "libraries": ["JavaScript", "HTML5", "Canvas"],
+      "keywords": ["data visualization", "git", "developer tools", "frontend", "interactive UI"],
+      "featured": false,
+      "updated": "2026-03-12"
+    },
+    {
+      "slug": "ak-ai",
+      "name": "ak-ai — Claude Code Skills & Tools",
+      "repo": "https://github.com/arslankazmi/ak-ai",
+      "description": "Open-source Claude Code skills, agents, and AI tooling — reusable building blocks for agent-driven engineering.",
+      "category": "Developer Tools",
+      "language": null,
+      "libraries": ["Claude Code"],
+      "keywords": ["Claude Code", "AI tooling", "developer tools", "agents", "open source"],
+      "featured": false,
+      "updated": "2026-05-19"
+    },
+    {
+      "slug": "ai-poetry",
+      "name": "AI Poetry",
+      "repo": "https://github.com/arslankazmi/ai-poetry",
+      "description": "Poems written by AI models, presented in the namesake forms of the models that wrote them.",
+      "category": "Creative AI",
+      "language": "HTML",
+      "libraries": ["Claude", "LLM"],
+      "keywords": ["generative AI", "creative writing", "LLM", "prompt engineering"],
+      "featured": false,
+      "updated": "2026-06-01"
+    },
+    {
+      "slug": "tips-and-tricks",
+      "name": "Tips & Tricks",
+      "repo": "https://github.com/arslankazmi/tips-and-tricks",
+      "description": "Short writeups on programming and tooling tips and tricks collected over time.",
+      "category": "Writing & Notes",
+      "language": null,
+      "libraries": [],
+      "keywords": ["technical writing", "documentation", "programming tips"],
+      "featured": false,
+      "updated": "2024-12-18"
+    }
+  ]
+}
