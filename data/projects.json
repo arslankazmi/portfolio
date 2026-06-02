@@ -17,8 +17,7 @@
     "ML & Modeling",
     "MLOps & Templates",
     "Developer Tools",
-    "Creative AI",
-    "Writing & Notes"
+    "Creative AI"
   ],
   "projects": [
     {
@@ -82,30 +81,6 @@
       "updated": "2023-08-08"
     },
     {
-      "slug": "keras-models",
-      "name": "Keras Models",
-      "repo": "https://github.com/arslankazmi/keras-models",
-      "description": "A collection of deep-learning models implemented in Keras — reference architectures and training experiments.",
-      "category": "ML & Modeling",
-      "language": "Python",
-      "libraries": ["Keras", "TensorFlow"],
-      "keywords": ["deep learning", "neural networks", "Keras", "model training", "computer vision"],
-      "featured": false,
-      "updated": "2018-12-20"
-    },
-    {
-      "slug": "uog-masters-thesis",
-      "name": "MSc Thesis — University of Guelph",
-      "repo": "https://github.com/arslankazmi/uog-masters-thesis-arslan-kazmi",
-      "description": "Master's thesis research (Computer Science + AI, University of Guelph) — write-up, experiments, and supporting code.",
-      "category": "ML & Modeling",
-      "language": null,
-      "libraries": [],
-      "keywords": ["research", "machine learning", "academic", "deep learning"],
-      "featured": false,
-      "updated": "2023-10-25"
-    },
-    {
       "slug": "fastapi-ml-template",
       "name": "FastAPI ML Template",
       "repo": "https://github.com/arslankazmi/fastapi-ml-template",
@@ -116,30 +91,6 @@
       "keywords": ["MLOps", "FastAPI", "model serving", "Docker", "API", "ML deployment", "template"],
       "featured": true,
       "updated": "2026-05-15"
-    },
-    {
-      "slug": "ml-repo-template",
-      "name": "ML Repo Template",
-      "repo": "https://github.com/arslankazmi/ml-repo-template",
-      "description": "A template ML repository showing a clean branch strategy for both R&D and productization workflows.",
-      "category": "MLOps & Templates",
-      "language": null,
-      "libraries": [],
-      "keywords": ["MLOps", "project structure", "R&D", "productization", "best practices", "template"],
-      "featured": false,
-      "updated": "2024-07-30"
-    },
-    {
-      "slug": "cml-example-base",
-      "name": "CML Example Base",
-      "repo": "https://github.com/arslankazmi/cml-example-base",
-      "description": "A worked example of Continuous Machine Learning (CML) — model training driven from CI with automated reporting.",
-      "category": "MLOps & Templates",
-      "language": null,
-      "libraries": ["CML", "GitHub Actions"],
-      "keywords": ["MLOps", "CI/CD", "continuous machine learning", "automation"],
-      "featured": false,
-      "updated": "2022-12-27"
     },
     {
       "slug": "ai-coded-git-scrub",
@@ -176,18 +127,6 @@
       "keywords": ["generative AI", "creative writing", "LLM", "prompt engineering"],
       "featured": false,
       "updated": "2026-06-01"
-    },
-    {
-      "slug": "tips-and-tricks",
-      "name": "Tips & Tricks",
-      "repo": "https://github.com/arslankazmi/tips-and-tricks",
-      "description": "Short writeups on programming and tooling tips and tricks collected over time.",
-      "category": "Writing & Notes",
-      "language": null,
-      "libraries": [],
-      "keywords": ["technical writing", "documentation", "programming tips"],
-      "featured": false,
-      "updated": "2024-12-18"
     }
   ]
 }
