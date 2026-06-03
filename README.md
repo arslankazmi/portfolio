@@ -32,11 +32,25 @@ node scripts/refresh.mjs --user arslankazmi
 GITHUB_TOKEN=ghp_xxx node scripts/refresh.mjs   # higher rate limit (optional)
 ```
 
-The script **upserts**: it refreshes auto fields (language, last-updated, repo URL) for
-existing entries while **preserving** your curated `category`, `libraries`, `keywords`,
-`featured`, and any custom `name`/`description`. New repos are appended with
-`category: "Uncategorized"` so nothing is silently dropped — review and categorize them.
-Forks and archived repos are excluded by default (`--include-forks` to keep forks).
+The script is **curation-aware**:
+- **Existing entries** — refreshes auto fields (language, last-updated, repo URL) and
+  **preserves** your curated `category`, `libraries`, `keywords`, `featured`, and any
+  custom `name`/`description`.
+- **New repos** — adds one only if it looks **AI/ML** (Python/Jupyter, or name/description/
+  topics matching AI/ML/LLM/CV/data terms) **and** isn't listed in `excludeRepos`. New
+  entries get a guessed `category`, topics as `keywords`, and `featured: false` for review.
+- Forks and archived repos are excluded by default. Flags: `--include-forks`, and `--all`
+  to also add non-AI/ML new repos (as `Uncategorized`).
+- Nothing is ever deleted. To hide a repo, add its name to `excludeRepos` in
+  `data/projects.json`.
+
+## Auto-update (daily, hands-off)
+
+`.github/workflows/refresh.yml` runs `scripts/refresh.mjs` **daily** (and on the manual
+*Run workflow* button), then commits any change to `data/projects.json`. Because Pages
+deploys from `main`, that commit publishes the update automatically — newly-created AI/ML
+repos show up on the site within a day, no action needed. Refine a new entry's category or
+keywords whenever you like by editing `data/projects.json`.
 
 ## Editing content
 
