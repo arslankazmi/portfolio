@@ -1,4 +1,4 @@
-# Project Directory — portfolio site
+# Project Catalog — portfolio site
 
 A static, dependency-free portfolio that lists my GitHub projects, features the AI / ML /
 data-science work, and lets visitors **group by Topic, Library, Keyword, or Language** —

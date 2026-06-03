@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arslan Kazmi — AI / ML Engineer · Project Directory</title>
-  <meta name="description" content="Project portfolio of Arslan Kazmi, MSc — AI/ML engineer. VLM evaluation, finetuning, document AI, LLM agents, and MLOps." />
+  <title>Arslan Kazmi — AI / ML Engineer · Catalog</title>
+  <meta name="description" content="Project Catalog of Arslan Kazmi, MSc — AI/ML engineer. VLM evaluation, finetuning, document AI, LLM agents, and MLOps." />
   <meta name="color-scheme" content="dark light" />
   <!-- Open Graph -->
   <meta property="og:title" content="Arslan Kazmi — AI / ML Engineer" />
@@ -31,8 +31,9 @@
   <header class="hero">
     <div class="hero-inner">
       <div class="hero-top">
-        <span class="kicker">Project Directory</span>
+        <span class="kicker">Project Catalog</span>
         <div class="toggles">
+          <button id="view-toggle" class="view-toggle" type="button" aria-pressed="false" title="Plain HTML table — copy-paste friendly">📄 plain</button>
           <button id="era-toggle" class="era-toggle" type="button" aria-pressed="false" title="Time-travel to 1996">💾 90s</button>
           <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light / dark theme">
             <span class="theme-icon" aria-hidden="true">☾</span>
@@ -56,6 +57,10 @@
       <div class="control-block grow">
         <label class="control-label" for="search">Search</label>
         <input id="search" class="search" type="search" placeholder="Search projects, keywords, libraries…" autocomplete="off" />
+      </div>
+      <div class="control-block">
+        <span class="control-label">Keywords</span>
+        <button id="copy-keywords" class="copy-btn" type="button" title="Copy every keyword, A–Z, comma-separated">⧉ Copy all keywords</button>
       </div>
     </div>
     <div id="active-filters" class="active-filters" aria-live="polite"></div>
@@ -92,6 +97,9 @@
 
     <div id="groups" class="groups"></div>
     <p id="empty" class="empty" hidden>No projects match your filters.</p>
+
+    <!-- Plain view: a raw HTML <table>, near-zero CSS, built to copy-paste. -->
+    <div id="plain-view" class="plain-view"></div>
   </main>
 
   <footer class="footer">

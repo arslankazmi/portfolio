@@ -47,7 +47,7 @@ async function init() {
 
 /* ---------------- profile / header ---------------- */
 function renderProfile(p = {}) {
-  if (p.name) { $("#profile-name").textContent = p.name; document.title = `${p.name} — Project Directory`; }
+  if (p.name) { $("#profile-name").textContent = p.name; document.title = `${p.name} — Project Catalog`; }
   if (p.tagline) $("#profile-tagline").textContent = p.tagline;
   if (p.blurb) $("#profile-blurb").textContent = p.blurb;
 
@@ -111,19 +111,109 @@ function wireControls() {
   const eraBtn = $("#era-toggle");
   if (eraBtn) eraBtn.addEventListener("click", () =>
     setEra(document.documentElement.getAttribute("data-era") === "90s" ? "" : "90s"));
+
+  const viewBtn = $("#view-toggle");
+  if (viewBtn) viewBtn.addEventListener("click", () =>
+    setView(document.documentElement.getAttribute("data-view") === "plain" ? "" : "plain"));
+
+  wireCopyKeywords();
 }
 
-/* ---------------- easter egg: 90s mode ---------------- */
+/* ---------------- view modes (rich / 90s / plain) ----------------
+   data-era="90s" (easter egg) and data-view="plain" (raw HTML table)
+   are mutually exclusive — turning one on clears the other. */
+function syncEraButton(era) {
+  const btn = $("#era-toggle");
+  if (!btn) return;
+  const is90s = (era ?? document.documentElement.getAttribute("data-era")) === "90s";
+  btn.setAttribute("aria-pressed", String(is90s));
+  btn.textContent = is90s ? "🖥️ back to now" : "💾 90s";
+}
+
+function syncViewButton(view) {
+  const btn = $("#view-toggle");
+  if (!btn) return;
+  const plain = (view ?? document.documentElement.getAttribute("data-view")) === "plain";
+  btn.setAttribute("aria-pressed", String(plain));
+  btn.textContent = plain ? "🖥️ rich view" : "📄 plain";
+}
+
 function setEra(era) {
   const root = document.documentElement;
-  if (era === "90s") root.setAttribute("data-era", "90s");
+  if (era === "90s") { root.setAttribute("data-era", "90s"); root.removeAttribute("data-view"); }
   else root.removeAttribute("data-era");
-  const btn = $("#era-toggle");
-  if (btn) {
-    btn.setAttribute("aria-pressed", String(era === "90s"));
-    btn.textContent = era === "90s" ? "🖥️ back to now" : "💾 90s";
-  }
-  try { localStorage.setItem("ak-era", era); } catch (_) {}
+  syncEraButton(era);
+  syncViewButton("");
+  try { localStorage.setItem("ak-era", era); if (era === "90s") localStorage.setItem("ak-view", ""); } catch (_) {}
+}
+
+function setView(view) {
+  const root = document.documentElement;
+  if (view === "plain") { root.setAttribute("data-view", "plain"); root.removeAttribute("data-era"); }
+  else root.removeAttribute("data-view");
+  syncViewButton(view);
+  syncEraButton("");
+  try { localStorage.setItem("ak-view", view); if (view === "plain") localStorage.setItem("ak-era", ""); } catch (_) {}
+}
+
+/* ---------------- copy all keywords (A–Z, comma-separated) ---------------- */
+function allKeywordsSorted() {
+  const seen = new Map(); // lowercased -> first-seen original casing
+  (state.data?.projects || []).forEach((p) =>
+    (p.keywords || []).forEach((k) => {
+      const key = k.toLowerCase();
+      if (!seen.has(key)) seen.set(key, k);
+    }));
+  return [...seen.values()].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+}
+
+function wireCopyKeywords() {
+  const btn = $("#copy-keywords");
+  if (!btn) return;
+  const label = btn.textContent;
+  btn.addEventListener("click", async () => {
+    const text = allKeywordsSorted().join(", ");
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (_) {
+      try { // fallback for file:// or older browsers
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        ok = document.execCommand("copy"); ta.remove();
+      } catch (_) {}
+    }
+    if (!ok) { try { window.prompt("Copy the keywords:", text); ok = true; } catch (_) {} }
+    btn.textContent = ok ? "✓ copied" : "⚠ couldn't copy";
+    setTimeout(() => { btn.textContent = label; }, 1500);
+  });
+}
+
+/* ---------------- plain view: raw HTML table ---------------- */
+function renderPlain() {
+  const host = $("#plain-view");
+  if (!host || !state.data) return;
+  const projects = state.data.projects || [];
+  const rows = projects.map((p) => `
+      <tr>
+        <td><a href="${esc(p.repo)}">${esc(p.name)}</a></td>
+        <td>${esc(p.description || "")}</td>
+        <td>${esc(p.category || "")}</td>
+        <td>${esc(p.language || "")}</td>
+        <td>${esc((p.libraries || []).join(", "))}</td>
+        <td>${esc((p.keywords || []).join(", "))}</td>
+        <td>${esc(p.updated || "")}</td>
+      </tr>`).join("");
+  const gh = state.data.profile?.github || "https://github.com/arslankazmi";
+  host.innerHTML = `
+    <h2>${esc(state.data.profile?.name || "")} — Projects</h2>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr><th>Project</th><th>Description</th><th>Topic</th><th>Language</th><th>Libraries</th><th>Keywords</th><th>Updated</th></tr>
+      </thead>
+      <tbody>${rows}
+      </tbody>
+    </table>
+    <p><a href="${esc(gh)}">All repositories on GitHub &rarr;</a></p>`;
 }
 
 function bumpHitCounter() {
@@ -229,6 +319,7 @@ function render() {
   }).join("");
 
   wireKeywordChips();
+  renderPlain();
 }
 
 function renderActiveFilters() {
@@ -296,9 +387,15 @@ function esc(s) {
 /* restore stored prefs before paint (no flash of the wrong theme/era) */
 (function restorePrefs() {
   try {
+    const root = document.documentElement;
     const t = localStorage.getItem("ak-theme");
-    if (t) document.documentElement.setAttribute("data-theme", t);
-    if (localStorage.getItem("ak-era") === "90s") document.documentElement.setAttribute("data-era", "90s");
+    if (t) root.setAttribute("data-theme", t);
+    // era and view are mutually exclusive; plain view wins if both got stored.
+    if (localStorage.getItem("ak-era") === "90s") root.setAttribute("data-era", "90s");
+    if (localStorage.getItem("ak-view") === "plain") {
+      root.setAttribute("data-view", "plain");
+      root.removeAttribute("data-era");
+    }
   } catch (_) {}
 })();
 
@@ -307,11 +404,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const icon = $("#theme-toggle .theme-icon");
   if (icon) icon.textContent = cur === "light" ? "☀" : "☾";
 
-  const eraBtn = $("#era-toggle");
-  if (eraBtn && document.documentElement.getAttribute("data-era") === "90s") {
-    eraBtn.setAttribute("aria-pressed", "true");
-    eraBtn.textContent = "🖥️ back to now";
-  }
+  syncEraButton();
+  syncViewButton();
   bumpHitCounter();
   init();
 });
