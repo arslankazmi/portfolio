@@ -69,7 +69,7 @@
         "computer vision"
       ],
       "featured": true,
-      "updated": "2026-06-03"
+      "updated": "2026-06-05"
     },
     {
       "slug": "doc-ai-pipeline",
@@ -116,7 +116,7 @@
         "research automation"
       ],
       "featured": true,
-      "updated": "2026-05-15"
+      "updated": "2026-06-05"
     },
     {
       "slug": "starcraft-ii-skill-classification",
@@ -184,7 +184,7 @@
         "interactive UI"
       ],
       "featured": false,
-      "updated": "2026-03-12"
+      "updated": "2026-06-05"
     },
     {
       "slug": "ak-ai",
@@ -224,7 +224,31 @@
         "prompt engineering"
       ],
       "featured": false,
-      "updated": "2026-06-01"
+      "updated": "2026-06-05"
+    },
+    {
+      "slug": "jedi-council",
+      "name": "jedi-council",
+      "repo": "https://github.com/arslankazmi/jedi-council",
+      "description": "Multi-agent Jedi Council deliberation system — LangGraph + LangChain showcase (public/private deliberation, persona agents, retro RPG overlay)",
+      "category": "AI Agents & LLMs",
+      "language": "Python",
+      "libraries": [],
+      "keywords": [],
+      "featured": false,
+      "updated": "2026-06-05"
+    },
+    {
+      "slug": "research-radar",
+      "name": "research-radar",
+      "repo": "https://github.com/arslankazmi/research-radar",
+      "description": "Conversational, multi-source ML research radar plugin for OpenClaw — LLM-judged relevance that learns from your in-chat 👍/👎",
+      "category": "AI Agents & LLMs",
+      "language": "TypeScript",
+      "libraries": [],
+      "keywords": [],
+      "featured": false,
+      "updated": "2026-06-05"
     }
   ]
 }
