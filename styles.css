@@ -254,6 +254,8 @@ html[data-theme="light"] .segmented button[aria-selected="true"] { color: #fff; 
   gap: clamp(1.2rem, 3vw, 2.2rem);
   margin: 0 0 3rem;
 }
+/* `display: grid` above outranks the UA [hidden] rule, so re-assert it when hidden. */
+.spotlight[hidden] { display: none; }
 /* Featured and Latest are each their own bounded panel. */
 .spotlight .featured-section,
 .spotlight .latest-section {
