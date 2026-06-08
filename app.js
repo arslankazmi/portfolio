@@ -210,6 +210,7 @@ function renderPlain() {
   const rows = projects.map((p) => `
       <tr>
         <td><a href="${esc(p.repo)}">${esc(p.name)}</a></td>
+        <td>${p.docs ? `<a href="${esc(p.docs)}">docs</a>` : ""}</td>
         <td>${esc(p.description || "")}</td>
         <td>${esc(p.category || "")}</td>
         <td>${esc(p.language || "")}</td>
@@ -223,7 +224,7 @@ function renderPlain() {
     <h2>${esc(state.data.profile?.name || "")} — Projects</h2>
     <table border="1" cellpadding="6" cellspacing="0">
       <thead>
-        <tr><th>Project</th><th>Description</th><th>Topic</th><th>Language</th><th>Libraries</th><th>Keywords</th><th>Created</th><th>Updated</th></tr>
+        <tr><th>Project (code)</th><th>Docs</th><th>Description</th><th>Topic</th><th>Language</th><th>Libraries</th><th>Keywords</th><th>Created</th><th>Updated</th></tr>
       </thead>
       <tbody>${rows}
       </tbody>
@@ -358,6 +359,8 @@ function card(p, i, opts = {}) {
   const latestCls = opts.latest ? " is-latest" : "";
   const star = p.featured ? `<span class="star" title="Featured">★</span>` : "";
   const newBadge = opts.latest ? `<span class="new-badge" title="Newest project">NEW</span>` : "";
+  const docs = p.docs || "";                 // project docs/demo page (GitHub Pages), when deployed
+  const primary = docs || p.repo;            // title links to docs when available, else the repo
   const lang = p.language
     ? `<span class="lang-pill"><span class="lang-dot"></span>${esc(p.language)}</span>` : "";
   const libs = (p.libraries || [])
@@ -370,14 +373,17 @@ function card(p, i, opts = {}) {
   return `
     <article class="card${featured}${latestCls}" ${delay}>
       <div class="card-head">
-        <h3><a href="${esc(p.repo)}" target="_blank" rel="noopener">${esc(p.name)}</a></h3>
+        <h3><a href="${esc(primary)}" target="_blank" rel="noopener">${esc(p.name)}</a></h3>
         <span class="badges">${newBadge}${star}</span>
       </div>
       <p class="card-desc">${esc(p.description || "")}</p>
       <div class="meta-row">${lang}${libs ? `<span class="tag-group-label">stack</span>${libs}` : ""}</div>
       ${kws ? `<div class="tags">${kws}</div>` : ""}
       <div class="card-foot">
-        <a class="repo-link" href="${esc(p.repo)}" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">→</span></a>
+        <span class="card-links">
+          ${docs ? `<a class="docs-link" href="${esc(docs)}" target="_blank" rel="noopener">Docs <span aria-hidden="true">↗</span></a>` : ""}
+          <a class="repo-link" href="${esc(p.repo)}" target="_blank" rel="noopener">${docs ? "Code" : "View on GitHub"} <span aria-hidden="true">→</span></a>
+        </span>
         ${updated}
       </div>
     </article>`;

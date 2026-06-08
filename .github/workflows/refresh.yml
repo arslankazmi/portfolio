@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  pages: read      # refresh.mjs reads each repo's Pages URL to populate project docs links
 
 concurrency:
   group: refresh-projects

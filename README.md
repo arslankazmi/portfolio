@@ -18,6 +18,9 @@ all switched live in the browser, no rebuild. Built to be served from GitHub Pag
   with the highest combined `created` + `updated` recency, so it stays correct as repos change.
 - `created` / `updated` are stored as full ISO timestamps (the UI shows them as `YYYY-MM-DD`);
   full precision lets Latest break same-day ties between repos.
+- A project's `docs` field (when set) is its live GitHub Pages docs/demo URL. Cards link to the
+  **docs page by default** and show both **Docs** and **Code** links (the plain table has a Docs
+  column too). `refresh.mjs` auto-fills `docs` from each repo's Pages API, so it stays current.
 
 ## Run locally
 

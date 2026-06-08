@@ -67,6 +67,21 @@ function guessCategory(repo) {
 const headers = { Accept: "application/vnd.github+json", "User-Agent": "portfolio-refresh" };
 if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
+// Resolve a repo's live GitHub Pages URL (docs/demo site), or null if none is built.
+// Only repos with has_pages are queried; transient failures return null (caller keeps any
+// existing docs link unless Pages is genuinely off).
+async function pagesUrlFor(repo) {
+  if (!repo.has_pages) return null;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${userLogin}/${repo.name}/pages`, { headers });
+    if (!res.ok) return null;
+    const j = await res.json();
+    return j.status && j.html_url ? j.html_url : null;
+  } catch (_) {
+    return null;
+  }
+}
+
 async function fetchAllRepos(user) {
   const repos = [];
   for (let page = 1; page <= 10; page++) {
@@ -83,22 +98,25 @@ async function fetchAllRepos(user) {
 const CURATED = ["category", "libraries", "keywords", "featured", "name", "description"];
 
 // Refresh an existing entry's auto fields in place. Returns true if found.
-function refreshExisting(existing, repo) {
+function refreshExisting(existing, repo, pagesUrl) {
   const prior = existing.find((p) => p.slug === repo.name || p.repo === repo.html_url);
   if (!prior) return false;
   prior.repo = repo.html_url;
   prior.language = repo.language || null;
   prior.updated = repo.pushed_at || prior.updated || null;          // full ISO; UI slices to date
   prior.created ??= repo.created_at || null;                        // set once; creation never changes
+  if (pagesUrl) prior.docs = pagesUrl;                              // live docs/demo page
+  else if (!repo.has_pages) delete prior.docs;                      // drop only when Pages is off
   if (!prior.description) prior.description = repo.description || "";
   return true;
 }
 
-function makeEntry(repo, category) {
+function makeEntry(repo, category, pagesUrl) {
   return {
     slug: repo.name,
     name: repo.name,
     repo: repo.html_url,
+    ...(pagesUrl ? { docs: pagesUrl } : {}),
     description: repo.description || "",
     category,
     language: repo.language || null,
@@ -121,12 +139,13 @@ function makeEntry(repo, category) {
   const skipped = [];
 
   for (const repo of visible) {
-    if (refreshExisting(projects, repo)) continue;                       // already curated → just refreshed
+    const pagesUrl = await pagesUrlFor(repo);                            // live docs/demo page, if any
+    if (refreshExisting(projects, repo, pagesUrl)) continue;             // already curated → just refreshed
     if (excludeRepos.has(repo.name.toLowerCase())) { skipped.push([repo.name, "excluded"]); continue; }
     const ai = isAiMl(repo);
     if (!ai && !addAll) { skipped.push([repo.name, "not AI/ML"]); continue; }
     const category = ai ? guessCategory(repo) : "Uncategorized";
-    projects.push(makeEntry(repo, category));
+    projects.push(makeEntry(repo, category, pagesUrl));
     added.push([repo.name, category]);
   }
 

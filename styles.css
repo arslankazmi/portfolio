@@ -354,8 +354,11 @@ html[data-theme="light"] .segmented button[aria-selected="true"] { color: #fff; 
 .tag-group-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-right: 0.1rem; align-self: center; }
 
 .card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 0.2rem; padding-top: 0.7rem; border-top: 1px solid var(--border); }
-.repo-link { font-size: 0.85rem; font-weight: 600; color: var(--accent); display: inline-flex; align-items: center; gap: 0.3rem; }
-.repo-link:hover { gap: 0.55rem; }
+.card-links { display: inline-flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.repo-link, .docs-link { font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem; }
+.repo-link { color: var(--accent); }
+.docs-link { color: var(--accent-2); }
+.repo-link:hover, .docs-link:hover { gap: 0.55rem; }
 .updated { font-size: 0.74rem; color: var(--text-faint); }
 
 .empty { text-align: center; color: var(--text-faint); padding: 3rem 0; font-size: 1.05rem; }
@@ -516,7 +519,7 @@ html[data-era="90s"] .kicker { color: #800080; background: none; border: none; }
 /* links: blue, underlined, visited purple — the 90s holy trinity */
 html[data-era="90s"] a { color: #0000ee; text-decoration: underline; }
 html[data-era="90s"] a:visited { color: #551a8b; }
-html[data-era="90s"] .repo-link, html[data-era="90s"] .footer-links a { color: #0000ee; }
+html[data-era="90s"] .repo-link, html[data-era="90s"] .docs-link, html[data-era="90s"] .footer-links a { color: #0000ee; text-decoration: underline; }
 
 /* beveled "Windows 95" controls */
 html[data-era="90s"] .era-toggle,
