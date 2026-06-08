@@ -3,44 +3,11 @@
    Vanilla CSS — no framework. Dark-first, light theme via [data-theme].
    ============================================================ */
 
-:root {
-  --bg: #0a0b10;
-  --bg-2: #0f1118;
-  --surface: rgba(255, 255, 255, 0.035);
-  --surface-2: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --text: #eef0f6;
-  --text-dim: #a6abbd;
-  --text-faint: #6c7186;
-  --accent: #7c8cff;
-  --accent-2: #38e1c4;
-  --accent-3: #ff8bd0;
-  --glow: 124, 140, 255;
-  --radius: 16px;
-  --radius-sm: 9px;
-  --shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.8);
-  --maxw: 1180px;
-  --font-head: "Sora", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
-}
-
-html[data-theme="light"] {
-  --bg: #f6f7fb;
-  --bg-2: #eef0f7;
-  --surface: rgba(20, 24, 45, 0.025);
-  --surface-2: rgba(20, 24, 45, 0.05);
-  --border: rgba(20, 24, 45, 0.1);
-  --border-strong: rgba(20, 24, 45, 0.18);
-  --text: #15182a;
-  --text-dim: #4a5068;
-  --text-faint: #858aa0;
-  --accent: #4d5df0;
-  --accent-2: #0fae93;
-  --accent-3: #d6469f;
-  --glow: 77, 93, 240;
-  --shadow: 0 18px 40px -22px rgba(40, 50, 90, 0.4);
-}
+/* Design tokens (the :root + light-theme variables, fonts, and ds-* primitives) now live in
+   the ak-design system and are loaded via index.html:
+     https://arslankazmi.github.io/ak-design/dist/catalog.css
+   This file keeps only the portfolio's own layout, components, 90s, and plain-view styles —
+   all referencing var(--…) from that bundle. Edit the palette in the ak-design repo. */
 
 * { box-sizing: border-box; }
 
