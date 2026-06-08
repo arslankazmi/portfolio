@@ -305,12 +305,13 @@ function render() {
 
   renderActiveFilters();
 
-  // Spotlight band (Featured + Latest) — only meaningful with no active filters/search.
+  // Spotlight band (Featured + Latest) — only on the default grouping, with no active filters.
   const spotlight = $("#spotlight");
   const noFilter = !state.query && state.activeKeywords.size === 0;
+  const onDefaultGroup = state.groupBy === (state.data.defaultGrouping || "category");
   const featured = all.filter((p) => p.featured);
   const latest = latestProject();
-  if (noFilter && (featured.length || latest)) {
+  if (noFilter && onDefaultGroup && (featured.length || latest)) {
     spotlight.hidden = false;
     $("#featured").innerHTML = featured.map((p, i) => card(p, i)).join("");
     $("#latest").innerHTML = latest ? card(latest, 0, { latest: true }) : "";

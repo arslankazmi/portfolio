@@ -253,13 +253,21 @@ html[data-theme="light"] .segmented button[aria-selected="true"] { color: #fff; 
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: clamp(1.2rem, 3vw, 2.2rem);
   margin: 0 0 3rem;
-  padding: 1.5rem clamp(1.1rem, 2.5vw, 1.8rem);
+}
+/* Featured and Latest are each their own bounded panel. */
+.spotlight .featured-section,
+.spotlight .latest-section {
+  margin: 0; min-width: 0;
+  padding: 1.4rem clamp(1.1rem, 2vw, 1.5rem);
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) + 4px);
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 70%, transparent), transparent);
 }
-.spotlight .featured-section,
-.spotlight .latest-section { margin: 0; min-width: 0; }
+/* Latest gets a distinct accent boundary so it reads as its own thing. */
+.spotlight .latest-section {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, var(--surface)), transparent);
+}
 @media (max-width: 860px) {
   .spotlight { grid-template-columns: 1fr; gap: 1.6rem; }
 }
@@ -527,10 +535,12 @@ html[data-era="90s"] .search { border: 2px inset #808080 !important; background:
 html[data-era="90s"] .controls { position: static; background: transparent; border: none; }
 html[data-era="90s"] .control-label { color: #800080; }
 
-/* spotlight band drops to a plain stacked layout in 90s mode */
-html[data-era="90s"] .spotlight {
-  grid-template-columns: 1fr; gap: 14px;
-  background: transparent; border: 2px groove #808080; border-radius: 0; padding: 10px 12px;
+/* spotlight band drops to a plain stacked layout in 90s mode; each panel keeps its own bevel */
+html[data-era="90s"] .spotlight { grid-template-columns: 1fr; gap: 14px; }
+html[data-era="90s"] .featured-section,
+html[data-era="90s"] .latest-section {
+  background: transparent !important; border: 2px groove #808080 !important;
+  border-radius: 0 !important; padding: 10px 12px;
 }
 html[data-era="90s"] .new-badge {
   background: #000080 !important; color: #fff !important; border-radius: 0; border: 1px outset #fff;
