@@ -188,6 +188,20 @@ function wireCopyKeywords() {
   });
 }
 
+/* ---------------- latest project (creation date + last commit combined) ----------------
+   Combined recency = created + last-commit, as epoch sums. Full ISO timestamps in the
+   data break sub-day ties (e.g. two repos created the same day). */
+function latestProject() {
+  const projects = state.data?.projects || [];
+  const score = (p) => (Date.parse(p.created || "") || 0) + (Date.parse(p.updated || "") || 0);
+  let best = null, bestScore = -Infinity;
+  for (const p of projects) {
+    const s = score(p);
+    if (s > bestScore) { bestScore = s; best = p; }
+  }
+  return best;
+}
+
 /* ---------------- plain view: raw HTML table ---------------- */
 function renderPlain() {
   const host = $("#plain-view");
@@ -201,14 +215,15 @@ function renderPlain() {
         <td>${esc(p.language || "")}</td>
         <td>${esc((p.libraries || []).join(", "))}</td>
         <td>${esc((p.keywords || []).join(", "))}</td>
-        <td>${esc(p.updated || "")}</td>
+        <td>${esc((p.created || "").slice(0, 10))}</td>
+        <td>${esc((p.updated || "").slice(0, 10))}</td>
       </tr>`).join("");
   const gh = state.data.profile?.github || "https://github.com/arslankazmi";
   host.innerHTML = `
     <h2>${esc(state.data.profile?.name || "")} — Projects</h2>
     <table border="1" cellpadding="6" cellspacing="0">
       <thead>
-        <tr><th>Project</th><th>Description</th><th>Topic</th><th>Language</th><th>Libraries</th><th>Keywords</th><th>Updated</th></tr>
+        <tr><th>Project</th><th>Description</th><th>Topic</th><th>Language</th><th>Libraries</th><th>Keywords</th><th>Created</th><th>Updated</th></tr>
       </thead>
       <tbody>${rows}
       </tbody>
@@ -290,15 +305,18 @@ function render() {
 
   renderActiveFilters();
 
-  // Featured strip — only meaningful with no active filters/search.
-  const featuredSection = $("#featured-section");
+  // Spotlight band (Featured + Latest) — only meaningful with no active filters/search.
+  const spotlight = $("#spotlight");
   const noFilter = !state.query && state.activeKeywords.size === 0;
   const featured = all.filter((p) => p.featured);
-  if (noFilter && featured.length) {
-    featuredSection.hidden = false;
+  const latest = latestProject();
+  if (noFilter && (featured.length || latest)) {
+    spotlight.hidden = false;
     $("#featured").innerHTML = featured.map((p, i) => card(p, i)).join("");
+    $("#latest").innerHTML = latest ? card(latest, 0, { latest: true }) : "";
+    $("#latest-section").hidden = !latest;
   } else {
-    featuredSection.hidden = true;
+    spotlight.hidden = true;
   }
 
   const groups = buildGroups(filtered);
@@ -334,23 +352,25 @@ function renderActiveFilters() {
   $("#clear-filters").addEventListener("click", () => { state.activeKeywords.clear(); render(); });
 }
 
-function card(p, i) {
+function card(p, i, opts = {}) {
   const featured = p.featured ? " is-featured" : "";
+  const latestCls = opts.latest ? " is-latest" : "";
   const star = p.featured ? `<span class="star" title="Featured">★</span>` : "";
+  const newBadge = opts.latest ? `<span class="new-badge" title="Newest project">NEW</span>` : "";
   const lang = p.language
     ? `<span class="lang-pill"><span class="lang-dot"></span>${esc(p.language)}</span>` : "";
   const libs = (p.libraries || [])
     .map((l) => `<span class="tag lib">${esc(l)}</span>`).join("");
   const kws = (p.keywords || [])
     .map((k) => `<span class="tag kw${state.activeKeywords.has(k) ? " active" : ""}" data-kw="${esc(k)}" role="button" tabindex="0">${esc(k)}</span>`).join("");
-  const updated = p.updated ? `<span class="updated">updated ${esc(p.updated)}</span>` : "<span></span>";
+  const updated = p.updated ? `<span class="updated">updated ${esc((p.updated).slice(0, 10))}</span>` : "<span></span>";
   const delay = `style="animation-delay:${Math.min(i * 35, 350)}ms"`;
 
   return `
-    <article class="card${featured}" ${delay}>
+    <article class="card${featured}${latestCls}" ${delay}>
       <div class="card-head">
         <h3><a href="${esc(p.repo)}" target="_blank" rel="noopener">${esc(p.name)}</a></h3>
-        ${star}
+        <span class="badges">${newBadge}${star}</span>
       </div>
       <p class="card-desc">${esc(p.description || "")}</p>
       <div class="meta-row">${lang}${libs ? `<span class="tag-group-label">stack</span>${libs}` : ""}</div>

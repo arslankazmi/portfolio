@@ -74,7 +74,9 @@
         <h2>Projects</h2>
         <p>JavaScript is off — here's the plain list. Everything links straight to GitHub.</p>
         <ul>
-          <li><a href="https://github.com/arslankazmi/receipt-ocr">Receipt OCR</a> — VLM receipt OCR: multi-model eval (Donut/Qwen2-VL/TrOCR/Claude), Donut finetune, FastAPI.</li>
+          <li><a href="https://github.com/arslankazmi/receipt-ocr">Receipt OCR</a> — a full ML/AI suite: data prep, multi-model eval (Donut/Qwen2-VL/TrOCR/Claude), Donut finetune, FastAPI.</li>
+          <li><a href="https://github.com/arslankazmi/jedi-council">Jedi Council</a> — multi-agent LangGraph deliberation system with persona agents and a retro RPG overlay.</li>
+          <li><a href="https://github.com/arslankazmi/research-radar">Research Radar</a> — a custom OpenClaw plugin: conversational ML research radar with LLM-judged, feedback-learning relevance.</li>
           <li><a href="https://github.com/arslankazmi/doc-ai-pipeline">Document AI Pipeline</a> — handwritten-form extraction with a human-in-the-loop feedback loop.</li>
           <li><a href="https://github.com/arslankazmi/langgraph-research-agent">LangGraph Research Agent</a> — multi-agent equity research, LangGraph + Postgres + LangSmith.</li>
           <li><a href="https://github.com/arslankazmi/StarCraft-II-Player-Skill-Classification">StarCraft II Player Skill Classification</a> — skill-tier classification from gameplay telemetry.</li>
@@ -87,12 +89,22 @@
       </section>
     </noscript>
 
-    <section id="featured-section" class="featured-section" hidden>
-      <div class="section-head">
-        <h2>★ Featured</h2>
-        <p class="section-sub">Flagship AI / ML work</p>
-      </div>
-      <div id="featured" class="card-grid"></div>
+    <!-- Spotlight band: Featured + Latest, two columns, set apart from the rest. -->
+    <section id="spotlight" class="spotlight" hidden>
+      <section id="featured-section" class="featured-section">
+        <div class="section-head">
+          <h2>★ Featured</h2>
+          <p class="section-sub">Flagship AI / ML work</p>
+        </div>
+        <div id="featured" class="card-grid"></div>
+      </section>
+      <section id="latest-section" class="latest-section">
+        <div class="section-head">
+          <h2>🆕 Latest</h2>
+          <p class="section-sub">Newest project</p>
+        </div>
+        <div id="latest" class="card-grid"></div>
+      </section>
     </section>
 
     <div id="groups" class="groups"></div>

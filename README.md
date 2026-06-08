@@ -13,6 +13,11 @@ all switched live in the browser, no rebuild. Built to be served from GitHub Pag
 - **`index.html` + `styles.css` + `app.js`** render everything client-side from that JSON.
 - Grouping, search, and keyword filters are pure frontend — switching the grouping just
   re-renders; nothing is fetched again.
+- The page opens with a **spotlight band**: a **★ Featured** column (curated `featured: true`
+  entries) and a **🆕 Latest** column. Latest is computed, not curated — it picks the project
+  with the highest combined `created` + `updated` recency, so it stays correct as repos change.
+- `created` / `updated` are stored as full ISO timestamps (the UI shows them as `YYYY-MM-DD`);
+  full precision lets Latest break same-day ties between repos.
 
 ## Run locally
 

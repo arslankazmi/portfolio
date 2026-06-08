@@ -47,7 +47,7 @@
       "slug": "receipt-ocr",
       "name": "Receipt OCR",
       "repo": "https://github.com/arslankazmi/receipt-ocr",
-      "description": "VLM receipt OCR with a multi-model evaluation harness (Donut, Qwen2-VL, TrOCR, Claude), a Donut finetune, and a FastAPI service. WebDataset sharding scales it from 200 images to 550 GB.",
+      "description": "A full ML/AI suite for receipt OCR: data prep with WebDataset sharding (200 images → 550 GB), a multi-model evaluation harness (Donut, Qwen2-VL, TrOCR, Claude), a Donut finetune, and a FastAPI inference service.",
       "category": "Computer Vision / Document AI",
       "language": "Python",
       "libraries": [
@@ -65,11 +65,62 @@
         "document AI",
         "model evaluation",
         "fine-tuning",
+        "data preparation",
+        "ML pipeline",
         "FastAPI",
         "computer vision"
       ],
       "featured": true,
-      "updated": "2026-06-05"
+      "created": "2026-05-18T13:07:06Z",
+      "updated": "2026-06-05T11:28:19Z"
+    },
+    {
+      "slug": "jedi-council",
+      "name": "Jedi Council",
+      "repo": "https://github.com/arslankazmi/jedi-council",
+      "description": "A multi-agent Jedi Council deliberation system built on LangGraph — persona agents debate in public and private rounds, orchestrated through a shared graph, with a retro RPG overlay on top.",
+      "category": "AI Agents & LLMs",
+      "language": "Python",
+      "libraries": [
+        "LangGraph",
+        "LangChain",
+        "Phaser"
+      ],
+      "keywords": [
+        "LLM agents",
+        "multi-agent",
+        "LangGraph",
+        "orchestration",
+        "persona agents",
+        "RAG"
+      ],
+      "featured": true,
+      "created": "2026-06-05T12:51:18Z",
+      "updated": "2026-06-05T14:00:55Z"
+    },
+    {
+      "slug": "research-radar",
+      "name": "Research Radar",
+      "repo": "https://github.com/arslankazmi/research-radar",
+      "description": "A custom OpenClaw plugin: a conversational, multi-source ML research radar with LLM-judged relevance that learns from your in-chat 👍/👎 feedback over time.",
+      "category": "AI Agents & LLMs",
+      "language": "TypeScript",
+      "libraries": [
+        "TypeScript",
+        "OpenClaw",
+        "LLM"
+      ],
+      "keywords": [
+        "OpenClaw plugin",
+        "LLM-as-judge",
+        "research automation",
+        "feedback learning",
+        "RAG",
+        "ML research"
+      ],
+      "featured": true,
+      "created": "2026-06-05T12:44:51Z",
+      "updated": "2026-06-05T13:52:52Z"
     },
     {
       "slug": "doc-ai-pipeline",
@@ -91,8 +142,9 @@
         "data extraction",
         "ML pipeline"
       ],
-      "featured": true,
-      "updated": "2026-05-19"
+      "featured": false,
+      "created": "2026-05-18T13:09:02Z",
+      "updated": "2026-05-19T12:47:39Z"
     },
     {
       "slug": "langgraph-research-agent",
@@ -115,8 +167,9 @@
         "financial services",
         "research automation"
       ],
-      "featured": true,
-      "updated": "2026-06-05"
+      "featured": false,
+      "created": "2026-05-15T11:25:39Z",
+      "updated": "2026-06-05T13:33:58Z"
     },
     {
       "slug": "starcraft-ii-skill-classification",
@@ -138,7 +191,8 @@
         "esports analytics"
       ],
       "featured": false,
-      "updated": "2023-08-08"
+      "created": "2022-02-11T19:03:21Z",
+      "updated": "2023-08-08T17:55:23Z"
     },
     {
       "slug": "fastapi-ml-template",
@@ -161,8 +215,9 @@
         "ML deployment",
         "template"
       ],
-      "featured": true,
-      "updated": "2026-05-15"
+      "featured": false,
+      "created": "2026-05-15T09:49:03Z",
+      "updated": "2026-05-15T09:49:20Z"
     },
     {
       "slug": "ai-coded-git-scrub",
@@ -184,7 +239,8 @@
         "interactive UI"
       ],
       "featured": false,
-      "updated": "2026-06-05"
+      "created": "2026-03-12T12:18:01Z",
+      "updated": "2026-06-05T13:35:37Z"
     },
     {
       "slug": "ak-ai",
@@ -204,7 +260,8 @@
         "open source"
       ],
       "featured": false,
-      "updated": "2026-05-19"
+      "created": "2026-05-14T07:55:35Z",
+      "updated": "2026-05-19T10:46:44Z"
     },
     {
       "slug": "ai-poetry",
@@ -224,31 +281,8 @@
         "prompt engineering"
       ],
       "featured": false,
-      "updated": "2026-06-05"
-    },
-    {
-      "slug": "jedi-council",
-      "name": "jedi-council",
-      "repo": "https://github.com/arslankazmi/jedi-council",
-      "description": "Multi-agent Jedi Council deliberation system — LangGraph + LangChain showcase (public/private deliberation, persona agents, retro RPG overlay)",
-      "category": "AI Agents & LLMs",
-      "language": "Python",
-      "libraries": [],
-      "keywords": [],
-      "featured": false,
-      "updated": "2026-06-05"
-    },
-    {
-      "slug": "research-radar",
-      "name": "research-radar",
-      "repo": "https://github.com/arslankazmi/research-radar",
-      "description": "Conversational, multi-source ML research radar plugin for OpenClaw — LLM-judged relevance that learns from your in-chat 👍/👎",
-      "category": "AI Agents & LLMs",
-      "language": "TypeScript",
-      "libraries": [],
-      "keywords": [],
-      "featured": false,
-      "updated": "2026-06-05"
+      "created": "2026-05-14T09:18:28Z",
+      "updated": "2026-06-05T13:32:08Z"
     }
   ]
 }

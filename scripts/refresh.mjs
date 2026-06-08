@@ -88,7 +88,8 @@ function refreshExisting(existing, repo) {
   if (!prior) return false;
   prior.repo = repo.html_url;
   prior.language = repo.language || null;
-  prior.updated = (repo.pushed_at || "").slice(0, 10) || prior.updated || null;
+  prior.updated = repo.pushed_at || prior.updated || null;          // full ISO; UI slices to date
+  prior.created ??= repo.created_at || null;                        // set once; creation never changes
   if (!prior.description) prior.description = repo.description || "";
   return true;
 }
@@ -104,7 +105,8 @@ function makeEntry(repo, category) {
     libraries: [],
     keywords: repo.topics || [],
     featured: false,
-    updated: (repo.pushed_at || "").slice(0, 10) || null,
+    created: repo.created_at || null,
+    updated: repo.pushed_at || null,
   };
 }
 
