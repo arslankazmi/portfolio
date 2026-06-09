@@ -100,14 +100,6 @@ function wireControls() {
     t = setTimeout(() => { state.query = v.trim().toLowerCase(); render(); }, 110);
   });
 
-  $("#theme-toggle").addEventListener("click", () => {
-    const root = document.documentElement;
-    const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
-    root.setAttribute("data-theme", next);
-    $("#theme-toggle .theme-icon").textContent = next === "light" ? "☀" : "☾";
-    try { localStorage.setItem("ak-theme", next); } catch (_) {}
-  });
-
   const eraBtn = $("#era-toggle");
   if (eraBtn) eraBtn.addEventListener("click", () =>
     setEra(document.documentElement.getAttribute("data-era") === "90s" ? "" : "90s"));
@@ -415,9 +407,7 @@ function esc(s) {
 (function restorePrefs() {
   try {
     const root = document.documentElement;
-    const t = localStorage.getItem("ak-theme");
-    if (t) root.setAttribute("data-theme", t);
-    // era and view are mutually exclusive; plain view wins if both got stored.
+    // dev theme is dark-only; no light/theme restore. era and view are mutually exclusive.
     if (localStorage.getItem("ak-era") === "90s") root.setAttribute("data-era", "90s");
     if (localStorage.getItem("ak-view") === "plain") {
       root.setAttribute("data-view", "plain");
@@ -427,10 +417,6 @@ function esc(s) {
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
-  const cur = document.documentElement.getAttribute("data-theme");
-  const icon = $("#theme-toggle .theme-icon");
-  if (icon) icon.textContent = cur === "light" ? "☀" : "☾";
-
   syncEraButton();
   syncViewButton();
   bumpHitCounter();

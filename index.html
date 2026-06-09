@@ -12,10 +12,10 @@
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Shared design tokens + base + ds-* primitives (catalog theme) from the ak-design system.
-       Loaded before styles.css so its var(--…) references resolve. Fonts ship inside this bundle. -->
-  <link rel="stylesheet" href="https://arslankazmi.github.io/ak-design/dist/catalog.css?v=1" />
-  <link rel="stylesheet" href="./styles.css?v=5" />
+  <!-- Shared design tokens (dev theme — dark, cerulean, Lexend/JetBrains) from the ak-design system.
+       Dark-only: <html data-theme="dark"> is fixed; the light toggle has been removed. -->
+  <link rel="stylesheet" href="https://arslankazmi.github.io/ak-design/dist/dev.css?v=1" />
+  <link rel="stylesheet" href="./styles.css?v=6" />
 </head>
 <body>
   <div class="bg-orbs" aria-hidden="true">
@@ -37,9 +37,6 @@
         <div class="toggles">
           <button id="view-toggle" class="view-toggle" type="button" aria-pressed="false" title="Plain HTML table — copy-paste friendly">📄 plain</button>
           <button id="era-toggle" class="era-toggle" type="button" aria-pressed="false" title="Time-travel to 1996">💾 90s</button>
-          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light / dark theme">
-            <span class="theme-icon" aria-hidden="true">☾</span>
-          </button>
         </div>
       </div>
       <h1 id="profile-name">Arslan Kazmi</h1>
@@ -127,6 +124,6 @@
   </footer>
 
   <!-- Bump ?v= whenever app.js/styles.css change, so browsers fetch the new asset (not a stale cache). -->
-  <script src="./app.js?v=4" defer></script>
+  <script src="./app.js?v=6" defer></script>
 </body>
 </html>
