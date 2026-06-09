@@ -73,7 +73,7 @@
       ],
       "featured": true,
       "created": "2026-05-18T13:07:06Z",
-      "updated": "2026-06-05T11:28:19Z"
+      "updated": "2026-06-08T12:39:00Z"
     },
     {
       "slug": "jedi-council",
@@ -123,7 +123,7 @@
       ],
       "featured": true,
       "created": "2026-06-05T12:44:51Z",
-      "updated": "2026-06-08T10:58:33Z"
+      "updated": "2026-06-09T05:40:51Z"
     },
     {
       "slug": "doc-ai-pipeline",
@@ -148,7 +148,7 @@
       ],
       "featured": false,
       "created": "2026-05-18T13:09:02Z",
-      "updated": "2026-05-19T12:47:39Z"
+      "updated": "2026-06-08T12:30:35Z"
     },
     {
       "slug": "langgraph-research-agent",
@@ -244,7 +244,8 @@
       ],
       "featured": false,
       "created": "2026-03-12T12:18:01Z",
-      "updated": "2026-06-05T13:35:37Z"
+      "updated": "2026-06-08T13:38:49Z",
+      "docs": "https://arslankazmi.github.io/ai-coded-git-scrub/"
     },
     {
       "slug": "ak-ai",
@@ -287,7 +288,7 @@
       ],
       "featured": false,
       "created": "2026-05-14T09:18:28Z",
-      "updated": "2026-06-05T13:32:08Z"
+      "updated": "2026-06-08T12:58:50Z"
     }
   ]
 }
