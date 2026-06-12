@@ -227,17 +227,17 @@ function wireCopyKeywords() {
   });
 }
 
-/* Paste-ready markdown snippet for a project (for proposals / outreach). */
+/* Paste-ready PLAIN-TEXT snippet for a project (for proposals / outreach).
+   No markdown — proposal boxes (e.g. Upwork) are plain text, where markdown
+   syntax would paste in as literal symbols and read as templated. */
 function buildSnippet(p) {
   const kws = (p.keywords || []).join(", ");
-  const links = [
-    `[Code](${p.repo})`,
-    p.docs ? `[Docs](${p.docs})` : null,
-  ].filter(Boolean).join(" · ");
   const lines = [
-    `**${p.name}** — ${(p.description || "").trim()}`,
-    kws ? `_Keywords: ${kws}_` : null,
-    links || null,
+    p.name,
+    (p.description || "").trim() || null,
+    kws ? `Relevant skills: ${kws}` : null,
+    `Code: ${p.repo}`,
+    p.docs ? `Docs: ${p.docs}` : null,
   ].filter(Boolean);
   return lines.join("\n");
 }
