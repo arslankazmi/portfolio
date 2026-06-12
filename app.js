@@ -617,7 +617,7 @@ function renderMatches() {
   host.innerHTML =
     `<div class="matcher-results-head">
        <span class="matcher-count">${results.length} matching project${results.length === 1 ? "" : "s"}</span>
-       <button id="matcher-copy-all" class="snippet-btn" type="button">📋 Copy all (markdown)</button>
+       <button id="matcher-copy-all" class="snippet-btn" type="button">📋 Copy all</button>
      </div>${items}`;
 
   const copyAll = $("#matcher-copy-all");
