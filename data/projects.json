@@ -47,6 +47,7 @@
       "slug": "flux-wallpaper",
       "name": "Flux Wallpaper Generation Pipeline",
       "repo": "https://github.com/arslankazmi/flux-wallpaper",
+      "docs": "https://arslankazmi.github.io/flux-wallpaper/",
       "description": "Self-hosted FLUX text-to-image pipeline for high-resolution desktop wallpapers. Wraps HuggingFace Diffusers around Black Forest Labs' FLUX.2-klein (dev) and FLUX.1-schnell (prod) with GGUF quantization auto-selected by memory, device auto-detection (MPS/CUDA/CPU), Real-ESRGAN upscaling, third-party + custom LoRA support, a Gradio UI, and a daily off-hours scheduler.",
       "category": "Creative AI",
       "language": "Python",
