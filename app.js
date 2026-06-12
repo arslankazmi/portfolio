@@ -475,20 +475,24 @@ function toggleKeyword(kw) {
 
 // Equivalence groups: terminology that should match across phrasings.
 // First entry is the canonical token everything in the group collapses to.
+// Note: distinct real tools (langgraph, langchain, fastapi, transformers…) are kept
+// as their OWN tokens so they score on the project's actual tech stack; only true
+// synonyms / phrasings are collapsed.
 const SYNONYM_GROUPS = [
-  ["llm", "large language model", "language model", "gpt", "chatbot"],
-  ["nlp", "natural language processing"],
+  ["llm", "large language model", "large language models", "language model", "gpt", "gpt-4", "gpt-4o", "gpt4", "generative ai", "chatbot"],
+  ["nlp", "natural language processing", "ner", "named entity recognition", "entity recognition", "spacy", "bert", "taxonomy", "categorization"],
   ["cv", "computer vision", "vision", "image"],
-  ["ocr", "optical character recognition", "text extraction", "document extraction", "data extraction"],
-  ["rag", "retrieval augmented generation", "retrieval"],
+  ["ocr", "optical character recognition", "text extraction", "document extraction", "data extraction", "data enrichment"],
+  ["rag", "retrieval augmented generation", "retrieval-augmented generation", "retrieval", "vector database", "vector databases", "vector search", "vector store", "semantic search", "embeddings", "embedding", "pinecone", "elasticsearch", "opensearch", "hybrid search", "graph retrieval"],
   ["finetune", "finetuning", "fine-tuning", "fine tuning", "lora", "training", "train"],
-  ["eval", "evaluation", "benchmark", "benchmarking", "metric"],
-  ["agent", "agentic", "multi-agent", "multi agent", "langgraph"],
+  ["eval", "evaluation", "evaluate", "benchmark", "benchmarking", "metric", "llm-as-judge", "llm as judge", "hallucination", "hallucinations"],
+  ["agent", "agentic", "multi-agent", "multi agent", "autogen", "crewai", "orchestration"],
   ["api", "fastapi", "rest", "endpoint", "backend", "microservice"],
-  ["mlops", "deployment", "deploy", "docker", "ci/cd", "cicd", "pipeline"],
+  ["transformers", "transformer", "hugging face", "huggingface"],
+  ["mlops", "deployment", "deploy", "docker", "ci/cd", "cicd", "etl", "data pipeline", "data pipelines", "ml pipeline", "pyspark", "airflow"],
   ["classification", "classifier", "classify", "prediction", "predictive"],
   ["vlm", "vision language model", "multimodal", "multi-modal"],
-  ["dataset", "data curation", "labeling", "annotation"],
+  ["dataset", "data curation", "dataset curation", "labeling", "annotation"],
   ["document", "documents", "forms", "form", "invoice", "receipt", "pdf"],
 ];
 
@@ -498,7 +502,13 @@ const STOPWORDS = new Set(("a an the and or but of to for in on at by with from 
   "experience experienced work working role looking strong ability skills knowledge using use used " +
   "must required preferred plus years year team teams project projects job candidate who what " +
   "engineer engineering build building develop developer development designer senior junior need needs " +
-  "seeking someone help want wants make making create creating well good great new").split(/\s+/));
+  "seeking someone help want wants make making create creating well good great new highly skilled").split(/\s+/));
+
+// Ubiquitous, low-discrimination terms: in an AI/ML portfolio almost everything is
+// "ai"/"ml"/an "llm". They never count as a tech-stack signal and are damped, so a
+// shallow project can't ride generic mentions to the top.
+const GENERIC_LOW = new Set(["ai", "ml", "llm", "model", "gpt", "machine", "software",
+  "system", "data", "tech", "technology", "intelligent", "solution", "generative"]);
 
 let MATCHER = null; // lazily built corpus: { single, multiword, idf, docs }
 
@@ -537,53 +547,93 @@ function tokenize(text, maps) {
   return out;
 }
 
-function projectTokens(p, maps) {
-  const tf = new Map();
-  const add = (text, weight) => {
-    for (const tok of tokenize(text, maps)) tf.set(tok, (tf.get(tok) || 0) + weight);
-  };
-  (p.keywords || []).forEach((k) => add(k, 3));
-  (p.libraries || []).forEach((l) => add(l, 3));
-  add(p.category, 2);
-  add(p.language, 2);
-  add(p.name, 2);
-  add(p.description, 1);
-  return tf;
+function fieldTokens(texts, maps) {
+  const s = new Set();
+  for (const txt of texts) for (const tok of tokenize(txt || "", maps)) s.add(tok);
+  return s;
+}
+
+// Per-project token sets by tier: stack (libraries) > keywords > text (name/desc/etc).
+function projectDoc(p, maps) {
+  const stack = fieldTokens(p.libraries || [], maps);
+  const kw = fieldTokens(p.keywords || [], maps);
+  const text = fieldTokens([p.name, p.category, p.language, p.description], maps);
+  return { p, stack, kw, text, all: new Set([...stack, ...kw, ...text]) };
 }
 
 function buildMatcher() {
   const maps = buildSynonymMaps();
   const projects = state.data?.projects || [];
-  const docs = projects.map((p) => ({ p, tf: projectTokens(p, maps) }));
+  const docs = projects.map((p) => projectDoc(p, maps));
   const df = new Map();
-  for (const d of docs) for (const tok of d.tf.keys()) df.set(tok, (df.get(tok) || 0) + 1);
+  for (const d of docs) for (const tok of d.all) df.set(tok, (df.get(tok) || 0) + 1);
   const N = docs.length || 1;
   const idf = new Map();
   for (const [tok, n] of df) idf.set(tok, Math.log(1 + N / n)); // rarer terms weigh more
   return { ...maps, idf, docs };
 }
 
-function matchProjects(jobText) {
+// Split a job posting into lines and weight tokens by where they appear: terms under
+// "Technical Stack / Required / Preferred Skills / Responsibilities" headers and in
+// bullet-list skill lines count more than company blurb, perks, or personal traits.
+const HEADER_RE = /(skills?|tech(?:nical)?\s*stack|stack|require|qualif|responsib|what\s+you'?ll\s+do|experience|looking for|nice to have|most important|preferred|proficiency|frameworks?)/i;
+
+function parseJobText(text, maps) {
+  const lines = String(text || "").split(/\r?\n/);
+  const qtf = new Map();
+  let section = 1;
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) { section = 1; continue; } // blank line ends a section's emphasis
+    const isBullet = /^[•\-*•–—>]/.test(line);
+    const body = line.replace(/^[•\-*•–—>\s]+/, "");
+    const colon = body.indexOf(":");
+    const inlineHeader = colon > 0 && colon <= 40 && HEADER_RE.test(body.slice(0, colon));
+    const pureHeader = body.length <= 60 && HEADER_RE.test(body) && !/[.!?]$/.test(body);
+    if (pureHeader) section = 2.5;
+    let w = section;
+    if (isBullet || inlineHeader || pureHeader) w = Math.max(w, 2.5);
+    for (const tok of tokenize(body, maps)) qtf.set(tok, (qtf.get(tok) || 0) + w);
+  }
+  return qtf;
+}
+
+function matchProjects(jobText, limit = 3) {
   if (!MATCHER) MATCHER = buildMatcher();
   const m = MATCHER;
-  const qTokens = tokenize(jobText, m);
-  if (!qTokens.length) return [];
-  const qtf = new Map();
-  for (const t of qTokens) qtf.set(t, (qtf.get(t) || 0) + 1);
+  const qtf = parseJobText(jobText, m);
+  if (!qtf.size) return [];
 
-  const scored = m.docs.map(({ p, tf }) => {
-    let score = 0;
-    const matched = new Set();
-    for (const [t, qf] of qtf) {
-      const dw = tf.get(t);
-      if (dw) { score += qf * dw * (m.idf.get(t) || 1); matched.add(t); }
+  const STACK_W = 6, KW_W = 3, TEXT_W = 1, GEN = 0.5;
+
+  const scored = m.docs.map((d) => {
+    let base = 0, stackHits = 0, kwHits = 0;
+    const matched = [];
+    for (const [t, qw] of qtf) {
+      const generic = GENERIC_LOW.has(t);
+      let tier = null, w = 0;
+      if (d.stack.has(t) && !generic) { tier = "stack"; w = STACK_W; }   // real tech-stack match
+      else if (d.kw.has(t)) { tier = "kw"; w = KW_W; }
+      else if (d.stack.has(t)) { tier = "kw"; w = KW_W; }                 // generic listed as a "library"
+      else if (d.text.has(t)) { tier = "text"; w = TEXT_W; }
+      else continue;
+      if (generic) w *= GEN;
+      base += Math.log(1 + qw) * w * (m.idf.get(t) || 1); // log() damps keyword-stuffing
+      if (tier === "stack") stackHits++; else if (tier === "kw") kwHits++;
+      matched.push({ term: t, tier });
     }
-    return { p, score, matched: [...matched] };
-  }).filter((r) => r.score > 0);
+    if (!matched.length) return null;
+    const distinct = matched.length;
+    const coverageBoost = 1 + 0.35 * stackHits + 0.12 * kwHits;          // reward stack/topic coverage
+    let breadthPenalty = distinct < 2 ? 0.45 : 1;                        // one-term wins are weak
+    if (stackHits === 0 && kwHits === 0) breadthPenalty *= 0.5;          // text-only is the weakest
+    return { p: d.p, score: base * coverageBoost * breadthPenalty, stackHits, kwHits, matched };
+  }).filter(Boolean).filter((r) => r.score > 0);
 
   scored.sort((a, b) => b.score - a.score);
   const max = scored.length ? scored[0].score : 1;
-  return scored.slice(0, 6).map((r) => ({ ...r, pct: Math.max(8, Math.round((r.score / max) * 100)) }));
+  const n = Math.max(1, Math.min(5, limit | 0));
+  return scored.slice(0, n).map((r) => ({ ...r, pct: Math.max(8, Math.round((r.score / max) * 100)) }));
 }
 
 /* ---------------- matcher UI ---------------- */
@@ -596,14 +646,19 @@ function renderMatches() {
   const text = input.value.trim();
   if (!text) { host.innerHTML = `<p class="matcher-hint">Paste a job description above, then hit “Find matching projects”.</p>`; return; }
 
-  const results = matchProjects(text);
+  const limit = parseInt($("#matcher-count")?.value, 10) || 3;
+  const results = matchProjects(text, limit);
   if (!results.length) {
     host.innerHTML = `<p class="matcher-hint">No clear matches — try pasting more of the job description, or browse all projects.</p>`;
     return;
   }
 
+  const tierOrder = { stack: 0, kw: 1, text: 2 };
   const items = results.map((r, i) => {
-    const terms = r.matched.map((t) => `<span class="match-term">${esc(t)}</span>`).join("");
+    const terms = [...r.matched]
+      .sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier])
+      .map((mt) => `<span class="match-term${mt.tier === "stack" ? " stack" : ""}">${esc(mt.term)}</span>`)
+      .join("");
     return `
       <div class="match-item">
         <div class="match-meta">
@@ -667,6 +722,7 @@ function wireMatcher() {
   $("#matcher-close")?.addEventListener("click", closeMatcher);
   $("#matcher-overlay")?.addEventListener("click", closeMatcher);
   $("#matcher-run")?.addEventListener("click", renderMatches);
+  $("#matcher-count")?.addEventListener("change", () => { if ($("#matcher-input")?.value.trim()) renderMatches(); });
   $("#matcher-clear")?.addEventListener("click", () => {
     $("#matcher-input").value = "";
     renderMatches();
