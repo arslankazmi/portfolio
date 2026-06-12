@@ -44,6 +44,38 @@
   ],
   "projects": [
     {
+      "slug": "flux-wallpaper",
+      "name": "Flux Wallpaper Generation Pipeline",
+      "repo": "https://github.com/arslankazmi/flux-wallpaper",
+      "description": "Self-hosted FLUX text-to-image pipeline for high-resolution desktop wallpapers. Wraps HuggingFace Diffusers around Black Forest Labs' FLUX.2-klein (dev) and FLUX.1-schnell (prod) with GGUF quantization auto-selected by memory, device auto-detection (MPS/CUDA/CPU), Real-ESRGAN upscaling, third-party + custom LoRA support, a Gradio UI, and a daily off-hours scheduler.",
+      "category": "Creative AI",
+      "language": "Python",
+      "libraries": [
+        "FLUX.1",
+        "FLUX.2",
+        "Diffusers",
+        "HuggingFace",
+        "PyTorch",
+        "Gradio",
+        "Real-ESRGAN",
+        "GGUF"
+      ],
+      "keywords": [
+        "text-to-image",
+        "diffusion",
+        "FLUX",
+        "wallpaper",
+        "GGUF quantization",
+        "LoRA",
+        "MPS",
+        "Apple Silicon",
+        "image generation"
+      ],
+      "featured": true,
+      "created": "2026-06-12T00:00:00Z",
+      "updated": "2026-06-12T00:00:00Z"
+    },
+    {
       "slug": "receipt-ocr",
       "name": "Receipt OCR",
       "repo": "https://github.com/arslankazmi/receipt-ocr",
