@@ -17,6 +17,7 @@ const state = {
   groupBy: "category",
   query: "",
   activeKeywords: new Set(),
+  semantic: false, // Proposal Matcher: opt-in in-browser embedding re-ranking (lazy-loaded)
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -598,7 +599,8 @@ function parseJobText(text, maps) {
   return qtf;
 }
 
-function matchProjects(jobText, limit = 3) {
+// Lexical pass — returns ALL projects with a match, sorted desc (not yet sliced to limit).
+function lexicalScores(jobText) {
   if (!MATCHER) MATCHER = buildMatcher();
   const m = MATCHER;
   const qtf = parseJobText(jobText, m);
@@ -631,15 +633,148 @@ function matchProjects(jobText, limit = 3) {
   }).filter(Boolean).filter((r) => r.score > 0);
 
   scored.sort((a, b) => b.score - a.score);
-  const max = scored.length ? scored[0].score : 1;
+  return scored;
+}
+
+/* ============================================================
+   SEMANTIC LAYER (opt-in, lazy) — in-browser sentence embeddings
+   via Transformers.js, loaded from CDN only when the user enables
+   "Semantic matching". Augments the lexical scorer; never replaces
+   it. All-MiniLM-L6-v2 (q8, ~23MB), browser-cached after first load.
+   ============================================================ */
+const EMBED_MODEL = "Xenova/all-MiniLM-L6-v2";
+const EMBED_CDN = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3/+esm";
+let EMBEDDER = null, EMBEDDER_PROMISE = null, EMBEDDER_FAILED = false;
+
+// Lazy singleton. Returns the pipeline, or null if it can't load (offline/old browser/CDN blocked).
+async function getEmbedder(onProgress) {
+  if (EMBEDDER) return EMBEDDER;
+  if (EMBEDDER_FAILED) return null;
+  if (EMBEDDER_PROMISE) return EMBEDDER_PROMISE;
+  EMBEDDER_PROMISE = (async () => {
+    try {
+      const mod = await import(/* @vite-ignore */ EMBED_CDN);
+      const pipe = await mod.pipeline("feature-extraction", EMBED_MODEL, {
+        dtype: "q8",
+        progress_callback: onProgress,
+      });
+      EMBEDDER = pipe;
+      return pipe;
+    } catch (err) {
+      EMBEDDER_FAILED = true;
+      return null;
+    } finally {
+      EMBEDDER_PROMISE = null;
+    }
+  })();
+  return EMBEDDER_PROMISE;
+}
+
+async function embed(emb, texts) {
+  const out = await emb(texts, { pooling: "mean", normalize: true });
+  return out.tolist(); // unit vectors → cosine == dot product
+}
+
+function dot(a, b) {
+  let s = 0;
+  for (let i = 0; i < a.length; i++) s += a[i] * b[i];
+  return s;
+}
+
+// One representative string per project; embedded once and memoized on MATCHER.vectors.
+async function embedCorpus(emb, docs) {
+  const texts = docs.map(({ p }) =>
+    [p.name, p.category, (p.libraries || []).join(", "), (p.keywords || []).join(", "), p.description]
+      .filter(Boolean).join(". "));
+  return embed(emb, texts);
+}
+
+// Distil the JD to its high-signal lines (bullets / headers / "key: value") so the
+// embedding focuses on the work, not the company blurb. Falls back to the full text.
+function distillJob(text) {
+  const lines = String(text || "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const keep = lines.filter((l) => /^[•\-*–—>]/.test(l) || HEADER_RE.test(l) || l.includes(":"));
+  return (keep.length >= 3 ? keep : lines).join(". ").slice(0, 2000);
+}
+
+// slug -> cosine similarity for the JD; null if the model isn't available.
+async function semanticScores(jobText) {
+  const emb = await getEmbedder();
+  if (!emb) return null;
+  const m = MATCHER || (MATCHER = buildMatcher());
+  if (!m.vectors) m.vectors = await embedCorpus(emb, m.docs);
+  const [qv] = await embed(emb, [distillJob(jobText)]);
+  const out = new Map();
+  m.docs.forEach((d, i) => out.set(d.p.slug, dot(qv, m.vectors[i])));
+  return out;
+}
+
+// Top matches. Lexical by default; hybrid (lexical + semantic) when opts.semantic.
+async function matchProjects(jobText, limit = 3, opts = {}) {
+  const lex = lexicalScores(jobText);
   const n = Math.max(1, Math.min(5, limit | 0));
-  return scored.slice(0, n).map((r) => ({ ...r, pct: Math.max(8, Math.round((r.score / max) * 100)) }));
+  const pct = (score, max) => Math.max(8, Math.round((score / (max || 1)) * 100));
+
+  if (!opts.semantic) {
+    return lex.slice(0, n).map((r) => ({ ...r, mode: "lexical", pct: pct(r.score, lex[0]?.score) }));
+  }
+
+  const sem = await semanticScores(jobText);
+  if (!sem) { // model unavailable → fall back to lexical
+    const res = lex.slice(0, n).map((r) => ({ ...r, mode: "lexical", pct: pct(r.score, lex[0]?.score) }));
+    res.semanticFailed = true;
+    return res;
+  }
+
+  const SEM_FLOOR = 0.30;   // min raw cosine for a no-lexical project to surface
+  const lexMax = lex[0]?.score || 1;
+  const lexBySlug = new Map(lex.map((r) => [r.p.slug, r]));
+  const semVals = [...sem.values()];
+  const sMin = Math.min(...semVals), sMax = Math.max(...semVals);
+  const semNorm = (v) => (sMax > sMin ? (v - sMin) / (sMax - sMin) : 0);
+
+  const candidates = (MATCHER.docs).map((d) => {
+    const slug = d.p.slug;
+    const l = lexBySlug.get(slug);
+    const cos = sem.get(slug) ?? 0;
+    if (!l && cos < SEM_FLOOR) return null;                 // weak + no keyword overlap → drop
+    const lexN = l ? l.score / lexMax : 0;
+    const stackHits = l ? l.stackHits : 0;
+    const score = 0.5 * semNorm(cos) + 0.5 * lexN + 0.08 * Math.min(stackHits, 3);
+    return { p: d.p, score, stackHits, kwHits: l ? l.kwHits : 0, matched: l ? l.matched : [],
+      cos, mode: l ? "hybrid" : "semantic" };
+  }).filter(Boolean);
+
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates.slice(0, n).map((r) => ({ ...r, pct: pct(r.score, candidates[0]?.score) }));
 }
 
 /* ---------------- matcher UI ---------------- */
 let matcherLastFocus = null;
 
-function renderMatches() {
+// Ensure the embedding model is loaded, showing one-time download progress in the drawer.
+// Returns true once ready, false if it can't load.
+async function ensureEmbedderUI() {
+  if (EMBEDDER) return true;
+  if (EMBEDDER_FAILED) return false;
+  const prog = $("#matcher-progress");
+  const run = $("#matcher-run");
+  if (prog) { prog.hidden = false; prog.textContent = "Loading semantic model… (~23 MB, one-time)"; }
+  if (run) run.disabled = true;
+  const emb = await getEmbedder((p) => {
+    if (!prog) return;
+    if (p.status === "progress" && p.total) {
+      prog.textContent = `Loading semantic model… ${Math.round((p.loaded / p.total) * 100)}% (~23 MB, one-time)`;
+    } else if (p.status === "ready" || p.status === "done") {
+      prog.textContent = "Semantic model ready ✓";
+    }
+  });
+  if (run) run.disabled = false;
+  if (prog) setTimeout(() => { if (EMBEDDER) prog.hidden = true; }, 1200);
+  return !!emb;
+}
+
+async function renderMatches() {
   const input = $("#matcher-input");
   const host = $("#matcher-results");
   if (!input || !host) return;
@@ -647,18 +782,28 @@ function renderMatches() {
   if (!text) { host.innerHTML = `<p class="matcher-hint">Paste a job description above, then hit “Find matching projects”.</p>`; return; }
 
   const limit = parseInt($("#matcher-count")?.value, 10) || 3;
-  const results = matchProjects(text, limit);
+  let semantic = state.semantic;
+  if (semantic) {
+    const ready = await ensureEmbedderUI();
+    if (!ready) { semantic = false; showToast("Semantic unavailable — using keyword matching", "err"); }
+    else host.innerHTML = `<p class="matcher-hint">Matching…</p>`;
+  }
+
+  const results = await matchProjects(text, limit, { semantic });
   if (!results.length) {
     host.innerHTML = `<p class="matcher-hint">No clear matches — try pasting more of the job description, or browse all projects.</p>`;
     return;
   }
+  if (results.semanticFailed) showToast("Semantic unavailable — using keyword matching", "err");
 
   const tierOrder = { stack: 0, kw: 1, text: 2 };
   const items = results.map((r, i) => {
-    const terms = [...r.matched]
-      .sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier])
-      .map((mt) => `<span class="match-term${mt.tier === "stack" ? " stack" : ""}">${esc(mt.term)}</span>`)
-      .join("");
+    const terms = r.matched.length
+      ? [...r.matched]
+          .sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier])
+          .map((mt) => `<span class="match-term${mt.tier === "stack" ? " stack" : ""}">${esc(mt.term)}</span>`)
+          .join("")
+      : `<span class="match-term semantic">semantic match</span>`;
     return `
       <div class="match-item">
         <div class="match-meta">
@@ -723,6 +868,16 @@ function wireMatcher() {
   $("#matcher-overlay")?.addEventListener("click", closeMatcher);
   $("#matcher-run")?.addEventListener("click", renderMatches);
   $("#matcher-count")?.addEventListener("change", () => { if ($("#matcher-input")?.value.trim()) renderMatches(); });
+  const semToggle = $("#matcher-semantic");
+  if (semToggle) {
+    semToggle.checked = state.semantic;
+    semToggle.addEventListener("change", () => {
+      state.semantic = semToggle.checked;
+      try { localStorage.setItem("ak-sem", semToggle.checked ? "1" : ""); } catch (_) {}
+      if ($("#matcher-input")?.value.trim()) renderMatches();
+      else if (semToggle.checked) ensureEmbedderUI(); // start the one-time download now
+    });
+  }
   $("#matcher-clear")?.addEventListener("click", () => {
     $("#matcher-input").value = "";
     renderMatches();
@@ -767,6 +922,7 @@ function esc(s) {
       root.setAttribute("data-view", "plain");
       root.removeAttribute("data-era");
     }
+    if (localStorage.getItem("ak-sem") === "1") state.semantic = true;
   } catch (_) {}
 })();
 

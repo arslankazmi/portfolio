@@ -459,6 +459,23 @@ body.matcher-open { overflow: hidden; }
 }
 .matcher-count-select:focus { outline: none; border-color: var(--accent); }
 
+.sem-toggle {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; color: var(--text-dim); cursor: pointer; user-select: none;
+}
+.sem-toggle input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+.sem-beta {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent-2); border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent);
+  border-radius: 4px; padding: 0.02rem 0.3rem; vertical-align: middle;
+}
+.matcher-progress {
+  font-size: 0.8rem; color: var(--text-dim);
+  padding: 0.5rem 0.7rem; border-radius: var(--radius-sm);
+  border: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--border));
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
 .matcher-results { display: flex; flex-direction: column; gap: 1rem; margin-top: 0.3rem; }
 .matcher-hint { color: var(--text-faint); font-size: 0.9rem; margin: 0.4rem 0; }
 .matcher-results-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
@@ -483,6 +500,12 @@ body.matcher-open { overflow: hidden; }
   color: var(--accent); font-weight: 600;
   background: color-mix(in srgb, var(--accent) 16%, transparent);
   border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+}
+/* matched on meaning (no shared keyword) — flag it as a semantic-only hit */
+.match-term.semantic {
+  color: var(--accent-2); font-style: italic;
+  background: color-mix(in srgb, var(--accent-2) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent-2) 32%, transparent);
 }
 /* inside the narrow drawer, cards are single-column and not lift-on-hover */
 .matcher-results .card { animation: none; }

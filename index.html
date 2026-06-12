@@ -15,7 +15,7 @@
   <!-- Shared design tokens (dev theme — dark, cerulean, Lexend/JetBrains) from the ak-design system.
        Dark-only: <html data-theme="dark"> is fixed; the light toggle has been removed. -->
   <link rel="stylesheet" href="https://arslankazmi.github.io/ak-design/dist/dev.css?v=1" />
-  <link rel="stylesheet" href="./styles.css?v=8" />
+  <link rel="stylesheet" href="./styles.css?v=9" />
 </head>
 <body>
   <div class="bg-orbs" aria-hidden="true">
@@ -149,10 +149,15 @@
       </label>
       <button id="matcher-clear" class="matcher-clear" type="button">Clear</button>
     </div>
+    <label class="sem-toggle" for="matcher-semantic" title="Also match on meaning, not just keywords. Loads a small model in your browser (~23 MB, one-time).">
+      <input type="checkbox" id="matcher-semantic" />
+      <span>Semantic matching <span class="sem-beta">beta</span></span>
+    </label>
+    <div id="matcher-progress" class="matcher-progress" aria-live="polite" hidden></div>
     <div id="matcher-results" class="matcher-results" aria-live="polite"></div>
   </aside>
 
   <!-- Bump ?v= whenever app.js/styles.css change, so browsers fetch the new asset (not a stale cache). -->
-  <script src="./app.js?v=10" defer></script>
+  <script src="./app.js?v=11" defer></script>
 </body>
 </html>
