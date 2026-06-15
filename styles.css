@@ -250,6 +250,29 @@ html[data-theme="light"] .segmented button[aria-selected="true"] { color: #fff; 
 }
 .card.is-latest { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
 
+/* "Client work" badge + private (no public repo) case-study cards */
+.badge.client {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em;
+  color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent);
+  border-radius: 999px; padding: 0.12rem 0.5rem; line-height: 1.4; white-space: nowrap;
+}
+.badge.priv {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em;
+  color: var(--text-dim);
+  background: color-mix(in srgb, var(--text-dim) 12%, transparent);
+  border: 1px solid var(--border-strong, var(--border));
+  border-radius: 999px; padding: 0.12rem 0.5rem; line-height: 1.4; white-space: nowrap;
+}
+.card.is-private { border-color: color-mix(in srgb, var(--accent-2) 32%, var(--border)); }
+.card.is-private::before { background: linear-gradient(90deg, var(--accent-2), var(--accent-3)); }
+.client-line { margin: -0.2rem 0 0; font-size: 0.78rem; font-weight: 600; color: var(--accent-2); letter-spacing: 0.01em; }
+.highlights { margin: 0; padding-left: 1.05rem; color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; }
+.highlights li { margin: 0.1rem 0; }
+.case-study-link { font-size: 0.85rem; font-weight: 600; color: var(--accent-2); display: inline-flex; align-items: center; gap: 0.3rem; }
+.case-study-link:hover { gap: 0.55rem; }
+
 .group { margin-bottom: 2.6rem; scroll-margin-top: 90px; }
 .group-bar { height: 3px; width: 46px; border-radius: 3px; margin-bottom: 0.9rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
 

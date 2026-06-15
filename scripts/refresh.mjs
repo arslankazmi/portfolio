@@ -11,9 +11,11 @@
      logged. New entries get a guessed category, topics as keywords,
      and featured:false for you to review/promote.
    - Never deletes entries.
+   - Private entries (source:"private" — client case studies with no public
+     repo) are skipped entirely: never matched, refreshed, or removed.
 
-   Curated fields preserved: category, libraries, keywords, featured,
-   name, description.
+   Curated fields preserved: source, category, libraries, keywords, featured,
+   name, description, client, highlights, writeup.
 
    Usage:  node scripts/refresh.mjs [--user <login>] [--include-forks] [--all]
      --all  also add new NON-AI/ML repos (category "Uncategorized").
@@ -95,11 +97,15 @@ async function fetchAllRepos(user) {
   return repos;
 }
 
-const CURATED = ["category", "libraries", "keywords", "featured", "name", "description"];
+const CURATED = ["source", "category", "libraries", "keywords", "featured", "name", "description", "client", "highlights", "writeup"];
 
 // Refresh an existing entry's auto fields in place. Returns true if found.
+// Private entries (client case studies — source:"private", no public repo) are NEVER
+// matched here, so the unattended GitHub sync can never overwrite or delete them, even
+// if a private slug happens to collide with a real repo name.
 function refreshExisting(existing, repo, pagesUrl) {
-  const prior = existing.find((p) => p.slug === repo.name || p.repo === repo.html_url);
+  const prior = existing.find((p) =>
+    (p.source || "github") !== "private" && (p.slug === repo.name || p.repo === repo.html_url));
   if (!prior) return false;
   prior.repo = repo.html_url;
   prior.language = repo.language || null;

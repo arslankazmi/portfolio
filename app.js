@@ -17,8 +17,12 @@ const state = {
   groupBy: "category",
   query: "",
   activeKeywords: new Set(),
+  sourceFilter: "all", // all | github | private — public repos vs private client work
   semantic: false, // Proposal Matcher: opt-in in-browser embedding re-ranking (lazy-loaded)
 };
+
+// A project's origin: GitHub-sourced (default) or a private/client case study.
+const sourceOf = (p) => ((p && p.source) || "github");
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -42,6 +46,7 @@ async function init() {
   renderProfile(data.profile);
   renderStats(data.projects);
   renderGroupByControl(data.groupings || ["category", "library", "keyword", "language"]);
+  renderSourceFilter(data.projects);
   wireControls();
   render();
 }
@@ -84,6 +89,25 @@ function renderGroupByControl(groupings) {
     .join("");
 }
 
+// Source filter (All / Open-source / Client work) — only shown once there's any private
+// client work to filter to, so it stays invisible on a purely open-source catalog.
+function renderSourceFilter(projects) {
+  const host = $("#source-filter");
+  const block = $("#source-filter-block");
+  if (!host) return;
+  const hasPrivate = (projects || []).some((p) => sourceOf(p) === "private");
+  if (block) block.hidden = !hasPrivate;
+  if (!hasPrivate) { host.innerHTML = ""; return; }
+  const opts = [
+    ["all", "All"],
+    ["github", "Open-source"],
+    ["private", "Private"],
+  ];
+  host.innerHTML = opts
+    .map(([v, label]) => `<button data-source="${v}" aria-selected="${v === state.sourceFilter}">${label}</button>`)
+    .join("");
+}
+
 function wireControls() {
   $("#groupby").addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-group]");
@@ -91,6 +115,15 @@ function wireControls() {
     state.groupBy = btn.dataset.group;
     $("#groupby").querySelectorAll("button").forEach((b) =>
       b.setAttribute("aria-selected", String(b.dataset.group === state.groupBy)));
+    render();
+  });
+
+  $("#source-filter")?.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-source]");
+    if (!btn) return;
+    state.sourceFilter = btn.dataset.source;
+    $("#source-filter").querySelectorAll("button").forEach((b) =>
+      b.setAttribute("aria-selected", String(b.dataset.source === state.sourceFilter)));
     render();
   });
 
@@ -233,12 +266,16 @@ function wireCopyKeywords() {
    syntax would paste in as literal symbols and read as templated. */
 function buildSnippet(p) {
   const kws = (p.keywords || []).join(", ");
+  const highlights = (p.highlights || []).map((h) => `- ${h}`);
   const lines = [
     p.name,
+    p.client ? `Client: ${p.client}` : null,
     (p.description || "").trim() || null,
+    ...highlights,
     kws ? `Relevant skills: ${kws}` : null,
-    `Code: ${p.repo}`,
+    p.repo ? `Code: ${p.repo}` : null,        // omitted for private client work (no public repo)
     p.docs ? `Docs: ${p.docs}` : null,
+    p.writeup ? `Write-up: ${p.writeup}` : null,
   ].filter(Boolean);
   return lines.join("\n");
 }
@@ -267,9 +304,13 @@ function renderPlain() {
   const host = $("#plain-view");
   if (!host || !state.data) return;
   const projects = state.data.projects || [];
-  const rows = projects.map((p) => `
+  const rows = projects.map((p) => {
+    const link = p.repo || p.docs || p.writeup || "";
+    const nameCell = link ? `<a href="${esc(link)}">${esc(p.name)}</a>` : esc(p.name);
+    const tag = sourceOf(p) === "private" ? " (client work)" : "";
+    return `
       <tr>
-        <td><a href="${esc(p.repo)}">${esc(p.name)}</a></td>
+        <td>${nameCell}${tag}</td>
         <td>${p.docs ? `<a href="${esc(p.docs)}">docs</a>` : ""}</td>
         <td>${esc(p.description || "")}</td>
         <td>${esc(p.category || "")}</td>
@@ -278,7 +319,8 @@ function renderPlain() {
         <td>${esc((p.keywords || []).join(", "))}</td>
         <td>${esc((p.created || "").slice(0, 10))}</td>
         <td>${esc((p.updated || "").slice(0, 10))}</td>
-      </tr>`).join("");
+      </tr>`;
+  }).join("");
   const gh = state.data.profile?.github || "https://github.com/arslankazmi";
   host.innerHTML = `
     <h2>${esc(state.data.profile?.name || "")} — Projects</h2>
@@ -304,6 +346,8 @@ function bumpHitCounter() {
 
 /* ---------------- filtering ---------------- */
 function matchesFilters(p) {
+  // source filter (all / github / private)
+  if (state.sourceFilter !== "all" && sourceOf(p) !== state.sourceFilter) return false;
   // keyword chips (AND across selected)
   for (const kw of state.activeKeywords) {
     if (!(p.keywords || []).map((k) => k.toLowerCase()).includes(kw.toLowerCase())) return false;
@@ -368,7 +412,7 @@ function render() {
 
   // Spotlight band (Featured + Latest) — only on the default grouping, with no active filters.
   const spotlight = $("#spotlight");
-  const noFilter = !state.query && state.activeKeywords.size === 0;
+  const noFilter = !state.query && state.activeKeywords.size === 0 && state.sourceFilter === "all";
   const onDefaultGroup = state.groupBy === (state.data.defaultGrouping || "category");
   const featured = all.filter((p) => p.featured);
   const latest = latestProject();
@@ -415,12 +459,23 @@ function renderActiveFilters() {
 }
 
 function card(p, i, opts = {}) {
+  const isPrivate = sourceOf(p) === "private";
   const featured = p.featured ? " is-featured" : "";
   const latestCls = opts.latest ? " is-latest" : "";
+  const privateCls = isPrivate ? " is-private" : "";
   const star = p.featured ? `<span class="star" title="Featured">★</span>` : "";
   const newBadge = opts.latest ? `<span class="new-badge" title="Newest project">NEW</span>` : "";
+  const clientBadge = isPrivate
+    ? (p.client
+        ? `<span class="badge client" title="${esc(p.client)}">Client work</span>`
+        : `<span class="badge priv" title="Private — no public repo">Private</span>`)
+    : "";
   const docs = p.docs || "";                 // project docs/demo page (GitHub Pages), when deployed
-  const primary = docs || p.repo;            // title links to docs when available, else the repo
+  const primary = docs || p.writeup || p.repo || ""; // title links to docs, else write-up, else repo
+  const clientLine = isPrivate && p.client
+    ? `<p class="client-line">${esc(p.client)}</p>` : "";
+  const highlights = (p.highlights || []).length
+    ? `<ul class="highlights">${p.highlights.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>` : "";
   const lang = p.language
     ? `<span class="lang-pill"><span class="lang-dot"></span>${esc(p.language)}</span>` : "";
   const libs = (p.libraries || [])
@@ -429,21 +484,27 @@ function card(p, i, opts = {}) {
     .map((k) => `<span class="tag kw${state.activeKeywords.has(k) ? " active" : ""}" data-kw="${esc(k)}" role="button" tabindex="0">${esc(k)}</span>`).join("");
   const updated = p.updated ? `<span class="updated">updated ${esc((p.updated).slice(0, 10))}</span>` : "<span></span>";
   const delay = `style="animation-delay:${Math.min(i * 35, 350)}ms"`;
+  const title = primary
+    ? `<a href="${esc(primary)}" target="_blank" rel="noopener">${esc(p.name)}</a>`
+    : esc(p.name);
 
   return `
-    <article class="card${featured}${latestCls}" data-slug="${esc(p.slug || "")}" tabindex="0" role="button"
+    <article class="card${featured}${latestCls}${privateCls}" data-slug="${esc(p.slug || "")}" tabindex="0" role="button"
       aria-label="Copy proposal snippet for ${esc(p.name)}" title="Click to copy a proposal snippet" ${delay}>
       <div class="card-head">
-        <h3><a href="${esc(primary)}" target="_blank" rel="noopener">${esc(p.name)}</a></h3>
-        <span class="badges">${newBadge}${star}</span>
+        <h3>${title}</h3>
+        <span class="badges">${newBadge}${star}${clientBadge}</span>
       </div>
+      ${clientLine}
       <p class="card-desc">${esc(p.description || "")}</p>
+      ${highlights}
       <div class="meta-row">${lang}${libs ? `<span class="tag-group-label">stack</span>${libs}` : ""}</div>
       ${kws ? `<div class="tags">${kws}</div>` : ""}
       <div class="card-foot">
         <span class="card-links">
           ${docs ? `<a class="docs-link" href="${esc(docs)}" target="_blank" rel="noopener">Docs <span aria-hidden="true">↗</span></a>` : ""}
-          <a class="repo-link" href="${esc(p.repo)}" target="_blank" rel="noopener">${docs ? "Code" : "View on GitHub"} <span aria-hidden="true">→</span></a>
+          ${p.repo ? `<a class="repo-link" href="${esc(p.repo)}" target="_blank" rel="noopener">${docs ? "Code" : "View on GitHub"} <span aria-hidden="true">→</span></a>` : ""}
+          ${p.writeup ? `<a class="case-study-link" href="${esc(p.writeup)}" target="_blank" rel="noopener">Case study <span aria-hidden="true">↗</span></a>` : ""}
           <button class="snippet-btn" type="button" data-copy-slug="${esc(p.slug || "")}" title="Copy a paste-ready proposal snippet">📋 Copy</button>
         </span>
         ${updated}

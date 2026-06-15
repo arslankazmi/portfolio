@@ -15,7 +15,7 @@
   <!-- Shared design tokens (dev theme — dark, cerulean, Lexend/JetBrains) from the ak-design system.
        Dark-only: <html data-theme="dark"> is fixed; the light toggle has been removed. -->
   <link rel="stylesheet" href="https://arslankazmi.github.io/ak-design/dist/dev.css?v=1" />
-  <link rel="stylesheet" href="./styles.css?v=9" />
+  <link rel="stylesheet" href="./styles.css?v=10" />
 </head>
 <body>
   <div class="bg-orbs" aria-hidden="true">
@@ -59,6 +59,10 @@
           <button id="advanced-search" class="advanced-link" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="proposal-matcher" title="Match my projects to a job description">⌕ Advanced search</button>
         </div>
         <input id="search" class="search" type="search" placeholder="Search projects, keywords, libraries…" autocomplete="off" />
+      </div>
+      <div class="control-block" id="source-filter-block" hidden>
+        <span class="control-label">Type</span>
+        <div id="source-filter" class="segmented" role="tablist" aria-label="Filter by project type"></div>
       </div>
       <div class="control-block">
         <span class="control-label">Keywords</span>
@@ -158,6 +162,6 @@
   </aside>
 
   <!-- Bump ?v= whenever app.js/styles.css change, so browsers fetch the new asset (not a stale cache). -->
-  <script src="./app.js?v=11" defer></script>
+  <script src="./app.js?v=12" defer></script>
 </body>
 </html>

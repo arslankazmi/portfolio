@@ -322,6 +322,193 @@
       "featured": false,
       "created": "2026-05-14T09:18:28Z",
       "updated": "2026-06-08T12:58:50Z"
+    },
+    {
+      "slug": "cs-valutico-mcp-agent",
+      "name": "Valutico MCP Agent",
+      "source": "private",
+      "client": "Valutico",
+      "description": "Valuation agent powered by custom MCP server generation that lets AI interact with the Valutico valuation platform. The generator builds MCP servers from OpenAPI, Swagger and GraphQL specs. Shipped a working front-end, backend and MCP generator in one week.",
+      "highlights": [
+        "Custom MCP generator targets OpenAPI, Swagger & GraphQL specs",
+        "Full front-end, backend and generator delivered in a week"
+      ],
+      "category": "AI Agents & LLMs",
+      "language": "JavaScript",
+      "libraries": [
+        "MCP",
+        "Claude Code",
+        "Express",
+        "Vite",
+        "GraphQL",
+        "FastAPI",
+        "OpenAI"
+      ],
+      "keywords": [
+        "AI agents",
+        "MCP server generation",
+        "generative AI",
+        "REST APIs",
+        "OpenAPI",
+        "Swagger",
+        "valuations",
+        "AI engineering",
+        "Python"
+      ],
+      "featured": false
+    },
+    {
+      "slug": "cs-valutico-comparables",
+      "name": "Valutico — Valuation Comparables AI",
+      "source": "private",
+      "client": "Valutico",
+      "description": "AI algorithms for the valuation domain that surface valuation comparables — comparable companies (peers) and comparable M&A transactions — using semantic search and embeddings over financial entities.",
+      "category": "ML & Modeling",
+      "language": "Python",
+      "libraries": [
+        "Python",
+        "FastAPI",
+        "OpenAI"
+      ],
+      "keywords": [
+        "valuations",
+        "comparable companies",
+        "M&A transactions",
+        "semantic search",
+        "embeddings",
+        "large language models",
+        "generative AI",
+        "AI engineering",
+        "REST APIs"
+      ],
+      "featured": false
+    },
+    {
+      "slug": "cs-anomaly-detection",
+      "name": "Anomaly Detection on User & System Logs",
+      "source": "private",
+      "description": "Research, development and productization of anomaly-detection use cases over user and system logs — flagging anomalous user behaviour across service and machine interactions. Use cases included IP-spoofing detection and anomalous program / system-path detection.",
+      "highlights": [
+        "IP-spoofing detection from packet headers / network traffic",
+        "Anomalous program & system-path detection from system logs"
+      ],
+      "category": "ML & Modeling",
+      "language": "Python",
+      "libraries": [
+        "Python",
+        "scikit-learn",
+        "sentence-transformers",
+        "libpcap"
+      ],
+      "keywords": [
+        "anomaly detection",
+        "random forests",
+        "isolation forests",
+        "local outlier factor",
+        "embeddings",
+        "time series",
+        "network traffic",
+        "system logs",
+        "IP spoofing detection",
+        "Linux",
+        "systemd"
+      ],
+      "featured": false
+    },
+    {
+      "slug": "cs-pentest-agent",
+      "name": "Pentest Agent — Finetuned On-Prem LLM",
+      "source": "private",
+      "description": "Finetuned open-source models (Llama 3.1/3.2, Mistral) with unsloth on a custom penetration-testing instruct dataset to build an on-premise pentest assistant/agent — for use by penetration testers and for automated pentests. Served through Hugging Face Chat UI / Open WebUI over Ollama and llama.cpp.",
+      "category": "AI Agents & LLMs",
+      "language": "Python",
+      "libraries": [
+        "unsloth",
+        "Hugging Face",
+        "Ollama",
+        "llama.cpp",
+        "Open WebUI"
+      ],
+      "keywords": [
+        "fine-tuning",
+        "instruct tuning",
+        "penetration testing",
+        "large language models",
+        "on-premise LLM",
+        "Mistral",
+        "Llama 3.2",
+        "security"
+      ],
+      "featured": false
+    },
+    {
+      "slug": "cs-text-to-sql-agent",
+      "name": "Text-to-SQL Agent (RAG)",
+      "source": "private",
+      "client": "Retail (FMCG) chain",
+      "description": "RAG-based Text-to-SQL agent over a production database, querying across multiple tables for a retail FMCG chain. Used Mixtral and Llama 3 70B open-source LLMs deployed via custom llama.cpp containers on an Oracle VM with an Nvidia A10 GPU.",
+      "category": "AI Agents & LLMs",
+      "language": "Python",
+      "libraries": [
+        "LangChain",
+        "LlamaIndex",
+        "ChromaDB",
+        "Ollama",
+        "llama.cpp"
+      ],
+      "keywords": [
+        "RAG",
+        "Text-to-SQL",
+        "large language models",
+        "Mixtral",
+        "Llama 3 70B",
+        "vector database",
+        "retrieval",
+        "FMCG"
+      ],
+      "featured": false
+    },
+    {
+      "slug": "cs-gpt-language-model",
+      "name": "GPT Language Model (from scratch)",
+      "source": "private",
+      "description": "Implemented a Transformer from “Attention Is All You Need” from scratch — a character-level language model with multi-headed self-attention over a custom corpus.",
+      "category": "ML & Modeling",
+      "language": "Python",
+      "libraries": [
+        "PyTorch",
+        "Transformers"
+      ],
+      "keywords": [
+        "transformers",
+        "self-attention",
+        "language model",
+        "deep learning",
+        "attention is all you need",
+        "from scratch"
+      ],
+      "featured": false
+    },
+    {
+      "slug": "cs-text-to-image",
+      "name": "Text-to-Image Generation",
+      "source": "private",
+      "description": "Transformer-based generative image model with relative positional encoding, trained with PyTorch Lightning and tracked in TensorBoard.",
+      "category": "Creative AI",
+      "language": "Python",
+      "libraries": [
+        "PyTorch",
+        "PyTorch Lightning",
+        "TensorBoard"
+      ],
+      "keywords": [
+        "transformers",
+        "relative positional encoding",
+        "image generation",
+        "deep learning",
+        "generative AI"
+      ],
+      "featured": false
     }
   ]
 }
