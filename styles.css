@@ -265,16 +265,22 @@ html[data-theme="light"] .segmented button[aria-selected="true"] { color: #fff; 
   border: 1px solid var(--border-strong, var(--border));
   border-radius: 999px; padding: 0.12rem 0.5rem; line-height: 1.4; white-space: nowrap;
 }
-.card.is-private { border-color: color-mix(in srgb, var(--accent-2) 32%, var(--border)); }
-.card.is-private::before { background: linear-gradient(90deg, var(--accent-2), var(--accent-3)); }
+/* Private cards: signalled by a dashed border + badge (a STYLE cue), so the category
+   hue on the top accent bar stays the dominant colour signal. */
+.card.is-private { border-style: dashed; border-color: color-mix(in srgb, var(--accent-2) 38%, var(--border)); }
 .client-line { margin: -0.2rem 0 0; font-size: 0.78rem; font-weight: 600; color: var(--accent-2); letter-spacing: 0.01em; }
 .highlights { margin: 0; padding-left: 1.05rem; color: var(--text-dim); font-size: 0.85rem; line-height: 1.5; }
 .highlights li { margin: 0.1rem 0; }
 .case-study-link { font-size: 0.85rem; font-weight: 600; color: var(--accent-2); display: inline-flex; align-items: center; gap: 0.3rem; }
 .case-study-link:hover { gap: 0.55rem; }
 
+/* Category colour signals — hue from ak-design --viz-*, set per-card/section via --cat-color. */
+.cat-chip { display: inline-flex; align-items: center; gap: 0.35rem; margin: -0.15rem 0 0; font-size: 0.7rem; font-weight: 600; color: var(--text-dim); letter-spacing: 0.02em; }
+.cat-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cat-color, var(--accent)); flex-shrink: 0; }
+.section-head h2 .cat-dot { width: 11px; height: 11px; display: inline-block; margin-right: 0.5rem; vertical-align: middle; }
+
 .group { margin-bottom: 2.6rem; scroll-margin-top: 90px; }
-.group-bar { height: 3px; width: 46px; border-radius: 3px; margin-bottom: 0.9rem; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.group-bar { height: 3px; width: 46px; border-radius: 3px; margin-bottom: 0.9rem; background: linear-gradient(90deg, var(--cat-color, var(--accent)), color-mix(in srgb, var(--cat-color, var(--accent)) 25%, transparent)); }
 
 .card-grid {
   display: grid;
@@ -303,10 +309,10 @@ html[data-theme="light"] .segmented button[aria-selected="true"] { color: #fff; 
 .card::before {
   content: "";
   position: absolute; inset: 0 0 auto 0; height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-3));
-  opacity: 0; transition: opacity 0.18s ease;
+  background: linear-gradient(90deg, var(--cat-color, var(--accent)), transparent);
+  opacity: 0.85; transition: opacity 0.18s ease;
 }
-.card:hover { transform: translateY(-4px); border-color: var(--border-strong); background: var(--surface-2); }
+.card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--cat-color, var(--accent)) 45%, var(--border-strong)); background: var(--surface-2); }
 .card:hover::before { opacity: 1; }
 .card.is-featured { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
 

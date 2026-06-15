@@ -24,6 +24,18 @@ const state = {
 // A project's origin: GitHub-sourced (default) or a private/client case study.
 const sourceOf = (p) => ((p && p.source) || "github");
 
+// Category → ak-design categorical palette token (--viz-1..8, identical in both themes).
+// Keep this map in sync with dev/app.jsx CATEGORY_VAR on the blog. Unmapped → --accent.
+const CATEGORY_VAR = {
+  "AI Agents & LLMs": "--viz-1",                 // cerulean blue
+  "ML & Modeling": "--viz-2",                    // sea green
+  "Computer Vision / Document AI": "--viz-5",    // rose dust
+  "MLOps & Templates": "--viz-4",                // mustard
+  "Developer Tools": "--viz-6",                  // lilac
+  "Creative AI": "--viz-7",                      // terracotta
+};
+const categoryColor = (cat) => `var(${CATEGORY_VAR[cat] || "--accent"})`;
+
 const $ = (sel) => document.querySelector(sel);
 
 /* ---------------- load ---------------- */
@@ -429,13 +441,16 @@ function render() {
   const container = $("#groups");
   $("#empty").hidden = filtered.length !== 0;
 
+  const byCategory = state.groupBy === "category";
   container.innerHTML = groups.map((g) => {
     const cards = g.items.map((p, i) => card(p, i)).join("");
+    // When grouped by category, tint the section bar + header dot with the category hue.
+    const catStyle = byCategory ? ` style="--cat-color:${categoryColor(g.key)}"` : "";
     return `
-      <section class="group">
+      <section class="group"${catStyle}>
         <div class="group-bar"></div>
         <div class="section-head">
-          <h2>${esc(g.key)}</h2>
+          <h2>${byCategory ? `<span class="cat-dot"></span>` : ""}${esc(g.key)}</h2>
           <span class="section-count">${g.items.length} project${g.items.length === 1 ? "" : "s"}</span>
         </div>
         <div class="card-grid">${cards}</div>
@@ -483,18 +498,21 @@ function card(p, i, opts = {}) {
   const kws = (p.keywords || [])
     .map((k) => `<span class="tag kw${state.activeKeywords.has(k) ? " active" : ""}" data-kw="${esc(k)}" role="button" tabindex="0">${esc(k)}</span>`).join("");
   const updated = p.updated ? `<span class="updated">updated ${esc((p.updated).slice(0, 10))}</span>` : "<span></span>";
-  const delay = `style="animation-delay:${Math.min(i * 35, 350)}ms"`;
+  const delay = `style="animation-delay:${Math.min(i * 35, 350)}ms;--cat-color:${categoryColor(p.category)}"`;
   const title = primary
     ? `<a href="${esc(primary)}" target="_blank" rel="noopener">${esc(p.name)}</a>`
     : esc(p.name);
+  const catChip = p.category
+    ? `<span class="cat-chip" title="${esc(p.category)}"><span class="cat-dot"></span>${esc(p.category)}</span>` : "";
 
   return `
-    <article class="card${featured}${latestCls}${privateCls}" data-slug="${esc(p.slug || "")}" tabindex="0" role="button"
+    <article class="card${featured}${latestCls}${privateCls}" data-slug="${esc(p.slug || "")}" data-category="${esc(p.category || "")}" tabindex="0" role="button"
       aria-label="Copy proposal snippet for ${esc(p.name)}" title="Click to copy a proposal snippet" ${delay}>
       <div class="card-head">
         <h3>${title}</h3>
         <span class="badges">${newBadge}${star}${clientBadge}</span>
       </div>
+      ${catChip}
       ${clientLine}
       <p class="card-desc">${esc(p.description || "")}</p>
       ${highlights}
