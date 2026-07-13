@@ -522,6 +522,19 @@
       "featured": false,
       "created": "2026-07-06T15:49:06Z",
       "updated": "2026-07-07T09:44:52Z"
+    },
+    {
+      "slug": "tritris",
+      "name": "tritris",
+      "repo": "https://github.com/arslankazmi/tritris",
+      "description": "A T-shaped, rotating-field Tetris spin-off (Python/Pygame)",
+      "category": "ML & Modeling",
+      "language": "Python",
+      "libraries": [],
+      "keywords": [],
+      "featured": false,
+      "created": "2026-07-12T17:44:39Z",
+      "updated": "2026-07-12T18:38:08Z"
     }
   ]
 }
