@@ -535,6 +535,19 @@
       "featured": false,
       "created": "2026-07-12T17:44:39Z",
       "updated": "2026-07-14T17:27:40Z"
+    },
+    {
+      "slug": "voicelab",
+      "name": "voicelab",
+      "repo": "https://github.com/arslankazmi/voicelab",
+      "description": "",
+      "category": "ML & Modeling",
+      "language": "Python",
+      "libraries": [],
+      "keywords": [],
+      "featured": false,
+      "created": "2026-07-06T13:20:24Z",
+      "updated": "2026-07-06T13:20:30Z"
     }
   ]
 }
